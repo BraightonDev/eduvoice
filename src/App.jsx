@@ -1,12 +1,6 @@
-<<<<<<< HEAD
-
-import './App.css'
-import LetrasAudio from "./components/LetrasAudio";
-=======
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Pagina1 from './paginas/pagina1/pagina1';
->>>>>>> fa9877fcf7bc5dfdf0b2a820d57051ae3862deb4
 
 function App() {
   return (
@@ -21,8 +15,4 @@ function App() {
   );
 }
 
-<<<<<<< HEAD
 export default App;
-=======
-export default App;
->>>>>>> fa9877fcf7bc5dfdf0b2a820d57051ae3862deb4
