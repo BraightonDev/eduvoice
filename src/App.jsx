@@ -1,7 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Pagina1 from './paginas/pagina1/pagina1';
-import LetrasAudio from './components/LetrasAudio.jsx';
+import LetrasAudio from './components/letrasPronunciacion.jsx';
+import './App.css';
 
 function App() {
   return (

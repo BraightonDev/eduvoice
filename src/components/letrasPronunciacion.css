@@ -1,0 +1,45 @@
+.letras-container {
+  padding: 20px;
+  text-align: center;
+  font-family: sans-serif;
+}
+
+.letras-container h1 {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.nivel-button {
+  padding: 8px 16px;
+  margin: 0 5px;
+  border-radius: 6px;
+  background-color: #ddd;
+  cursor: pointer;
+  border: none;
+}
+
+.nivel-button.active {
+  background-color: #2563eb;
+  color: white;
+}
+
+.boton {
+  padding: 10px 20px;
+  margin: 10px 5px;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+}
+
+.boton-escuchar {
+  background-color: #3b82f6;
+}
+
+.boton-pronunciar {
+  background-color: #8b5cf6;
+}
+
+.boton-siguiente {
+  background-color: #10b981;
+}
