@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import './pagina1.css';
+import { useNavigate } from 'react-router-dom';
 import { iniciarReconocimientoVoz, detenerReconocimientoVoz } from './logica1/pagina1';
 
 const Pagina1 = () => {
   const [escuchando, setEscuchando] = useState(false);
+  const navigate = useNavigate();
 
   const manejarMicrofono = () => {
     if (escuchando) {
@@ -12,6 +14,10 @@ const Pagina1 = () => {
       iniciarReconocimientoVoz();
     }
     setEscuchando(!escuchando);
+  };
+
+  const irALetrasAudio = () => {
+    navigate('/letras-audio');
   };
 
   return (
@@ -28,6 +34,13 @@ const Pagina1 = () => {
           <img src="https://webaruba.com/sites/default/files/icon-images/forms-documents-drk-blue.svg" alt="Escritura" className="icono" />
           <p>Mejorar tu escritura</p>
         </div>
+      </div>
+
+      {/* Botón momentáneo */}
+      <div className="boton-letras-audio">
+        <button onMouseDown={irALetrasAudio}>
+          Ir a LetrasAudio
+        </button>
       </div>
 
       <div className="microfono" onClick={manejarMicrofono}>
