@@ -1,12 +1,31 @@
 {
   "alfabeto": [
-    {
-      "letra": "A",
-      "audio": "/audios/letras/A.mp3"
-    },
-    {
-      "letra": "B",
-      "audio": "/audios/letras/B.mp3"
-    }
+    { "letra": "A", "audio": "/audios/letras/A.mp3" },
+  { "letra": "B", "audio": "/audios/letras/B.mp3" },
+  { "letra": "C", "audio": "/audios/letras/C.mp3" },
+  { "letra": "D", "audio": "/audios/letras/D.mp3" },
+  { "letra": "E", "audio": "/audios/letras/E.mp3" },
+  { "letra": "F", "audio": "/audios/letras/F.mp3" },
+  { "letra": "G", "audio": "/audios/letras/G.mp3" },
+  { "letra": "H", "audio": "/audios/letras/H.mp3" },
+  { "letra": "I", "audio": "/audios/letras/I.mp3" },
+  { "letra": "J", "audio": "/audios/letras/J.mp3" },
+  { "letra": "K", "audio": "/audios/letras/K.mp3" },
+  { "letra": "L", "audio": "/audios/letras/L.mp3" },
+  { "letra": "M", "audio": "/audios/letras/M.mp3" },
+  { "letra": "N", "audio": "/audios/letras/N.mp3" },
+  { "letra": "Ñ", "audio": "/audios/letras/Ñ.mp3" },
+  { "letra": "O", "audio": "/audios/letras/O.mp3" },
+  { "letra": "P", "audio": "/audios/letras/P.mp3" },
+  { "letra": "Q", "audio": "/audios/letras/Q.mp3" },
+  { "letra": "R", "audio": "/audios/letras/R.mp3" },
+  { "letra": "S", "audio": "/audios/letras/S.mp3" },
+  { "letra": "T", "audio": "/audios/letras/T.mp3" },
+  { "letra": "U", "audio": "/audios/letras/U.mp3" },
+  { "letra": "V", "audio": "/audios/letras/V.mp3" },
+  { "letra": "W", "audio": "/audios/letras/W.mp3" },
+  { "letra": "X", "audio": "/audios/letras/X.mp3" },
+  { "letra": "Y", "audio": "/audios/letras/Y.mp3" },
+  { "letra": "Z", "audio": "/audios/letras/Z.mp3" }
   ]
 }
