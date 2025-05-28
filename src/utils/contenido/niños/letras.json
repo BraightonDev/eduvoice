@@ -1,0 +1,12 @@
+{
+  "alfabeto": [
+    {
+      "letra": "A",
+      "audio": "/audios/letras/A.mp3"
+    },
+    {
+      "letra": "B",
+      "audio": "/audios/letras/B.mp3"
+    }
+  ]
+}
