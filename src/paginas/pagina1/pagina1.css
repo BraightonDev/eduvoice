@@ -1,0 +1,49 @@
+.contenedor {
+  background-color: #269ec2;
+  height: 100vh;
+  text-align: center;
+  padding: 7rem;
+  box-sizing: border-box;
+  color: white;
+}
+
+.titulo {
+  font-size: 5rem;
+  font-weight: bold;
+  margin-bottom: 5rem;
+}
+
+.opciones {
+  display: flex;
+  justify-content: space-around;
+  margin: 5rem 0;
+}
+
+.cuadro {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 50px;
+  padding: 1.5rem;
+  width: 200px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.cuadro:hover {
+  transform: scale(1.05);
+}
+
+.icono {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 1rem;
+}
+
+.microfono {
+  margin-top: 3rem;
+  cursor: pointer;
+}
+
+.microfono img {
+  width: 100px;
+  height: 100px;
+}
