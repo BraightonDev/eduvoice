@@ -24,6 +24,29 @@ setNivel(nuevoNivel);
 setIndex(0); // reiniciar al comenzar otro nivel
 };
 
+const verificarPronunciacion = () => {
+  const reconocimiento = new window.webkitSpeechRecognition(); // o SpeechRecognition
+  reconocimiento.lang = "es-ES";
+
+  reconocimiento.onresult = (evento) => {
+    const resultado = evento.results[0][0].transcript.toLowerCase();
+    console.log("Pronunciaste:", resultado);
+
+    if (resultado === letraActual.letra.toLowerCase()) {
+      alert("✅ Pronunciación correcta");
+    } else {
+      alert("❌ Intenta de nuevo");
+    }
+  };
+
+  reconocimiento.onerror = (e) => {
+    console.error("Error:", e);
+    alert("Error al reconocer la voz");
+  };
+
+  reconocimiento.start();
+};
+
 return (
 <div className="p-4 text-center">
 <h1 className="text-3xl font-bold mb-4">Nivel: {nivel}</h1>
@@ -48,6 +71,13 @@ return (
     onClick={reproducirAudio}
   >
     Escuchar sonido
+  </button>
+  
+  <button
+    className="bg-purple-500 text-white px-4 py-2 rounded mt-2"
+    onClick={verificarPronunciacion}
+  >
+    Pronunciar letra
   </button>
 
   <button
