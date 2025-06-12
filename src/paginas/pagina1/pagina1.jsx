@@ -36,13 +36,6 @@ const Pagina1 = () => {
         </div>
       </div>
 
-      {/* Botón momentáneo */}
-      <div className="boton-letras-audio">
-        <button onMouseDown={irALetrasAudio}>
-          Ir a LetrasAudio
-        </button>
-      </div>
-
       <div className="microfono" onClick={manejarMicrofono}>
         <img src="https://cdn-icons-png.freepik.com/512/4903/4903738.png" alt="Microfono" />
       </div>
