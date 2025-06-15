@@ -1,5 +1,6 @@
 let reconocimiento;
 let escuchando = false;
+let navegarA = null; // Guardamos el navigate aquí
 
 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -10,12 +11,15 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
   reconocimiento.onresult = function (event) {
     const texto = event.results[0][0].transcript.toLowerCase();
     console.log("Texto detectado:", texto);
-    if (texto.includes("pronunciación")) {
-      window.location.href = "/paginas/pagina2";
-    } else if (texto.includes("escritura")) {
-      window.location.href = "/paginas/pagina3";
-    } else {
-      alert("No se reconoció un comando válido.");
+
+    if (navegarA) {
+      if (texto.includes("pronunciación")) {
+        navegarA("/paginaCategoriaNiños");
+      } else if (texto.includes("escritura")) {
+        navegarA("/pagina3");
+      }else {
+        alert("No se reconoció un comando válido.");
+      }
     }
   };
 
@@ -24,9 +28,10 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
   };
 }
 
-export function iniciarReconocimientoVoz() {
+export function iniciarReconocimientoVoz(navigate) {
   if (reconocimiento && !escuchando) {
     escuchando = true;
+    navegarA = navigate;
     reconocimiento.start();
     console.log("Reconocimiento de voz iniciado");
   }

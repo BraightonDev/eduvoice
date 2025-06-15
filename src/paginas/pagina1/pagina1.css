@@ -5,6 +5,7 @@
   padding: 7rem;
   box-sizing: border-box;
   color: white;
+  position: relative;
 }
 
 .titulo {
@@ -39,7 +40,10 @@
 }
 
 .microfono {
-  margin-top: 3rem;
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
   cursor: pointer;
 }
 

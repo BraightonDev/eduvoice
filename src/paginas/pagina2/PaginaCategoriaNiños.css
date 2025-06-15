@@ -1,0 +1,74 @@
+.contenedor {
+  background-color: #269ec2;
+  height: 100vh;
+  position: relative;
+  padding: 20px;
+  color: white;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.boton-volver {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  color: white;
+  background-color: transparent;
+  border: 2px solid white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.titulo {
+  font-size: 40px;
+  margin-top: 10px;
+  margin-bottom: 5px; /* Reducido */
+}
+
+.subtitulo {
+  font-size: 35px;
+  font-weight: bold;
+  margin-top: 2; 
+  margin-bottom: 20px;
+}
+
+.categorias {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 50px;
+  margin-top: 20px;
+}
+
+.columna {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.categoria {
+  text-align: center;
+  cursor: pointer;
+}
+
+.categoria img {
+  width: 150px;
+  height: 150px;
+}
+
+.categoria p {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.microfono {
+  margin-top: 320px;
+}
+
+.microfono img {
+  width: 100px;
+  height: 100px;
+}
