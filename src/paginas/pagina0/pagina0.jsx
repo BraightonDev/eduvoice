@@ -28,14 +28,13 @@ const Pagina0 = () => {
           <img src="https://jdlperformingarts.com/wp-content/uploads/2025/03/icon-01.png" alt="Pronunciación" className="icono" />
           <p>Mejorar tu pronunciación</p>
         </div>
-
+        <div className="microfono" onClick={manejarMicrofono}>
+        <img src="https://cdn-icons-png.freepik.com/512/4903/4903738.png" alt="Microfono" />
+      </div>
         <div className="cuadro" onClick={irAPagina3}>
           <img src="https://webaruba.com/sites/default/files/icon-images/forms-documents-drk-blue.svg" alt="Escritura" className="icono" />
           <p>Mejorar tu escritura</p>
         </div>
-      </div>
-      <div className="microfono" onClick={manejarMicrofono}>
-        <img src="https://cdn-icons-png.freepik.com/512/4903/4903738.png" alt="Microfono" />
       </div>
     </div>
   );

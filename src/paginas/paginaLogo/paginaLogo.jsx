@@ -1,23 +1,30 @@
-// paginaLogo.jsx
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Asegúrate de tener react-router-dom instalado
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./paginaLogo.css";
 
 const PaginaLogo = () => {
   const navigate = useNavigate();
+  const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      navigate("/pagina0"); // Redirige a tu página principal
-    }, 3000); // Espera 3 segundos
+    const fadeTimer = setTimeout(() => {
+      setFadeOut(true); // Inicia el desvanecimiento
+    }, 2000); // Comienza a desvanecer después de 2 segundos
 
-    return () => clearTimeout(timer);
+    const redirectTimer = setTimeout(() => {
+      navigate("/pagina0"); // Redirige después de 3 segundos
+    }, 3000);
+
+    return () => {
+      clearTimeout(fadeTimer);
+      clearTimeout(redirectTimer);
+    };
   }, [navigate]);
 
   return (
-    <div className="logo-container">
+    <div className={`logo-container ${fadeOut ? "fade-out" : ""}`}>
       <img
-        src="/imagenes/Logo/Logo.png" // Cambia esta ruta por la correcta
+        src="/imagenes/Logo/Logo.png"
         alt="Logo"
         className="logo-img"
       />

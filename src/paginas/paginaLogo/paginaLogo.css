@@ -1,0 +1,17 @@
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: white;
+  transition: opacity 1.5s ease;
+}
+
+.logo-container.fade-out {
+  opacity: 0;
+}
+
+.logo-img {
+  width: 500px;
+  height: auto;
+}
