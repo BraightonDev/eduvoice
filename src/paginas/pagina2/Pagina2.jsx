@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { iniciarReconocimientoVoz, detenerReconocimientoVoz } from './logica/logica2';
-import './PaginaCategoriaNiños.css';
+import { iniciarReconocimientoVoz, detenerReconocimientoVoz } from './logica2/logica2';
+import './Pagina2.css';
 
-const PaginaCategoriaNiños = () => {
+const Pagina2 = () => {
     const [escuchando, setEscuchando] = useState(false);
   const navigate = useNavigate();
   const manejarMicrofono = () => {
@@ -28,11 +28,11 @@ const PaginaCategoriaNiños = () => {
       <div className="categorias">
         <div className="columna izquierda">
           <div className="categoria" onClick={irLetras}>
-            <img src="/public/iconos/Letras.png" alt="Letras" />
+            <img src="/iconos/Letras.png" alt="Letras" />
             <p>Letras</p>
           </div>
           <div className="categoria" onClick={() => console.log("Color")}>
-            <img src="/public/iconos/Color.png" alt="Color" />
+            <img src="/iconos/Color.png" alt="Color" />
             <p>Color</p>
           </div>
         </div>
@@ -41,11 +41,11 @@ const PaginaCategoriaNiños = () => {
       </div>
         <div className="columna derecha">
           <div className="categoria" onClick={() => console.log("Número")}>
-            <img src="/public/iconos/Numero.png" alt="Número" />
+            <img src="/iconos/Numero.png" alt="Número" />
             <p>Número</p>
           </div>
           <div className="categoria" onClick={() => console.log("Palabra")}>
-            <img src="/public/iconos/Palabra.png" alt="Palabra" />
+            <img src="/iconos/Palabra.png" alt="Palabra" />
             <p>Palabra</p>
           </div>
         </div>
@@ -54,4 +54,4 @@ const PaginaCategoriaNiños = () => {
   );
 };
 
-export default PaginaCategoriaNiños;
+export default Pagina2;
