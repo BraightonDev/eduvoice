@@ -27,7 +27,11 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
 export function iniciarPronunciacion(callback) {
   if (reconocimiento && !escuchando) {
     escuchando = true;
-    reconocimiento._onFinalizado = callback;
+    reconocimiento.onresult = function (event) {
+  const transcript = event.results[0][0].transcript;
+  console.log("Texto detectado:", transcript);
+  callback(transcript);  // usa directamente el callback
+};
     reconocimiento.start();
     console.log("Reconocimiento de voz iniciado");
   }

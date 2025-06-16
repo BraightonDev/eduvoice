@@ -1,84 +1,56 @@
 import React, { useState } from "react";
-import letrasPorNivel from "../utils/contenido/niños/letras.json";
+import letras from "../utils/contenido/niños/letras.json";
 import { iniciarPronunciacion, detenerPronunciacion } from "./logicaPronunciacion";
-import './letrasPronunciacion.css';
+import "./letrasPronunciacion.css";
 
 function LetrasAudio() {
-  const [nivel, setNivel] = useState("básico");
   const [index, setIndex] = useState(0);
-  const [resultadoPronunciacion, setResultadoPronunciacion] = useState(null);
+  const [resultado, setResultado] = useState(null);
 
-  const letrasNivelActual = letrasPorNivel.niveles[nivel];
-  const letraActual = letrasNivelActual[index];
+  const letraActual = letras[index];
 
-  const reproducirAudio = () => {
-    const audio = new Audio(letraActual.audio);
-    audio.play();
-  };
+  const normalizar = (texto) =>
+    texto
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-zñ]/gi, "")
+      .toLowerCase();
 
   const siguiente = () => {
-    if (index < letrasNivelActual.length - 1) {
+    if (index < letras.length - 1) {
       setIndex(index + 1);
-      setResultadoPronunciacion(null);
+      setResultado(null);
     }
-  };
-
-  const cambiarNivel = (nuevoNivel) => {
-    setNivel(nuevoNivel);
-    setIndex(0);
-    setResultadoPronunciacion(null);
   };
 
   const verificarPronunciacion = () => {
     iniciarPronunciacion((transcript) => {
-      const normalizar = (texto) =>
-        texto
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .replace(/[^a-z]/gi, "")
-          .toLowerCase();
-
       console.log("Texto capturado:", transcript);
 
       if (transcript === "ERROR") {
-        setResultadoPronunciacion("error");
+        setResultado("error");
         return;
       }
 
       const dicho = normalizar(transcript);
-      const letraEsperada = normalizar(letraActual.letra);
+      const esperada = normalizar(letraActual.letra);
+      const detectada = dicho.slice(-1); // más seguro que charAt
 
-      // 🎯 Último carácter que se dijo
-      const letraDetectada = dicho.charAt(dicho.length - 1);
+      console.log("Letra detectada:", detectada, "| Esperada:", esperada);
 
-      console.log("Letra detectada:", letraDetectada, "| Esperada:", letraEsperada);
-
-      if (letraDetectada === letraEsperada) {
-        setResultadoPronunciacion("correcta");
-      } else {
-        setResultadoPronunciacion("incorrecta");
-      }
-
+      setResultado(detectada === esperada ? "correcta" : "incorrecta");
       detenerPronunciacion();
     });
   };
 
+  const reproducirAudio = () => {
+    const audio = new Audio(letraActual.audio);
+    audio.play().catch((e) => console.warn("Error al reproducir:", e.message));
+  };
+
   return (
-    <div className="letras-container">
-      <h1>Nivel: {nivel}</h1>
-
-      <div className="mb-4">
-        {["básico", "intermedio", "avanzado"].map((n) => (
-          <button
-            key={n}
-            onClick={() => cambiarNivel(n)}
-            className={`nivel-button ${nivel === n ? "active" : ""}`}
-          >
-            {n}
-          </button>
-        ))}
-      </div>
-
+    <div className="letras-container" key={index}>
+      <h1>Pronunciación de letras</h1>
       <h2 className="text-2xl mb-4">Letra: {letraActual.letra}</h2>
 
       <button className="boton boton-escuchar" onClick={reproducirAudio}>
@@ -89,20 +61,20 @@ function LetrasAudio() {
         Pronunciar letra
       </button>
 
-      {resultadoPronunciacion === "correcta" && (
+      {resultado === "correcta" && (
         <p style={{ color: "green", fontWeight: "bold" }}>✅ ¡Pronunciación correcta!</p>
       )}
-      {resultadoPronunciacion === "incorrecta" && (
+      {resultado === "incorrecta" && (
         <p style={{ color: "red", fontWeight: "bold" }}>❌ Intenta de nuevo</p>
       )}
-      {resultadoPronunciacion === "error" && (
+      {resultado === "error" && (
         <p style={{ color: "orange", fontWeight: "bold" }}>⚠️ Error al reconocer la voz</p>
       )}
 
       <button
         className="boton boton-siguiente"
         onClick={siguiente}
-        disabled={index >= letrasNivelActual.length - 1}
+        disabled={index >= letras.length - 1}
       >
         Siguiente letra
       </button>
