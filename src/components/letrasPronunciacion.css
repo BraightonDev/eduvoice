@@ -12,6 +12,18 @@
   align-items: center;
   gap: 1.5rem;
 }
+.boton-volver-pagina2 {
+  position: absolute;
+  top: 40px;
+  left: 50px;
+  color: white;
+  background-color: transparent;
+  border: 2px solid white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
 .letras-cuadro{
   display: flex;
   flex-direction: column;

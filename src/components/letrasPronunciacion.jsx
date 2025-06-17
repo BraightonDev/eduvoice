@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import letras from "../utils/contenido/niños/letras.json";
 import {
   iniciarPronunciacion,
@@ -7,6 +8,8 @@ import {
 import "./letrasPronunciacion.css";
 
 function LetrasAudio() {
+  const navigate = useNavigate();
+  const volverAtras = () => navigate('/pagina2');
   const [index, setIndex] = useState(0);
   const [resultado, setResultado] = useState(null);
 
@@ -53,6 +56,7 @@ function LetrasAudio() {
 
   return (
     <div className="letras-container" key={index}>
+      <button className="boton-volver-pagina2" onClick={volverAtras}>Volver atrás</button>
       <h1 className="letras-titulo">Pronunciación de letras</h1>
       <div className="letras-cuadro">
         <img src={letraActual.imagen} alt={letraActual.letra} />

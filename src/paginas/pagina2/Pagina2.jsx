@@ -17,11 +17,11 @@ const Pagina2 = () => {
 
     const irLetras = () => navigate('/letras-audio');
 
-  const volverAInicio = () => navigate('/');
+  const volverAtras = () => navigate('/pagina1');
 
   return (
     <div className="contenedor-pagina2">
-      <button className="boton-volver-pagina2" onClick={volverAInicio}>Volver al inicio</button>
+      <button className="boton-volver-pagina1" onClick={volverAtras}>Volver atras</button>
       <h1 className="titulo-pagina2">Mejora tu pronunciación</h1>
       <div className="categorias-pagina2">
         <div className="columna izquierda-pagina2">

@@ -22,9 +22,11 @@ const Pagina1 = () => {
 
   const irANiños = () => navigate("/pagina2");
   const irAAdultos = () => navigate("/pagina2");
+  const volverAtras = () => navigate('/pagina0');
 
   return (
     <div className="contenedor-pagina1">
+      <button className="boton-volver-pagina1" onClick={volverAtras}>Volver atrás</button>
       <h1 className="titulo-pagina1">Selecciona una categoría</h1>
 
       <div className="opciones-pagina1">

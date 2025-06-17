@@ -95,3 +95,17 @@
   transform: translateX(-50%);
   cursor: pointer;
 }
+
+/* Botón Volver */
+.boton-volver-pagina1 {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  color: white;
+  background-color: transparent;
+  border: 2px solid white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
