@@ -1,0 +1,13 @@
+[
+  { "letra": "Cero", "audio": "/audios/numeros/0. Cero.mp3", "imagen": "/imagenes/numeros/0.png" },
+  { "letra": "Uno", "audio": "/audios/numeros/1. Uno.mp3", "imagen": "/imagenes/numeros/1.png" },
+  { "letra": "Dos", "audio": "/audios/numeros/2. Dos.mp3", "imagen": "/imagenes/numeros/2.png" },
+  { "letra": "Tres", "audio": "/audios/numeros/3. Tres.mp3", "imagen": "/imagenes/numeros/3.png" },
+  { "letra": "Cuatro", "audio": "/audios/numeros/4. Cuatro.mp3", "imagen": "/imagenes/numeros/4.png" },
+  { "letra": "Cinco", "audio": "/audios/numeros/5. Cinco.mp3", "imagen": "/imagenes/numeros/5.png" },
+  { "letra": "Seis", "audio": "/audios/numeros/6. Seis.mp3", "imagen": "/imagenes/numeros/6.png" },
+  { "letra": "Siete", "audio": "/audios/numeros/7. Siete.mp3", "imagen": "/imagenes/numeros/7.png" },
+  { "letra": "Ocho", "audio": "/audios/numeros/8. Ocho.mp3", "imagen": "/imagenes/numeros/8.png" },
+  { "letra": "Nueve", "audio": "/audios/numeros/9. Nueve.mp3", "imagen": "/imagenes/numeros/9.png" },
+  { "letra": "Diez", "audio": "/audios/numeros/10. Diez.mp3", "imagen": "/imagenes/numeros/10.png" }
+]

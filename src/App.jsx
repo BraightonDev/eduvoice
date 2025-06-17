@@ -17,7 +17,8 @@ function App() {
         <Route path="/pagina1/:tipo" element={<Pagina1 />} />
         <Route path="/pagina2/:tipo/:categoria" element={<Pagina2 />} />
         <Route path="/pagina3" element={<div>Página 3</div>} />
-        <Route path="/letras-audio" element={<LetrasAudio />} />
+        <Route path="/contenido/:tipo/niños/:tema" element={<LetrasAudio />} />
+
       </Routes>
     </Router>
   );

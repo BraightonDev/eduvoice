@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from 'react-router-dom';
-import letras from "../utils/contenido/niños/letras.json";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   iniciarPronunciacion,
   detenerPronunciacion,
@@ -9,59 +8,68 @@ import "./letrasPronunciacion.css";
 
 function LetrasAudio() {
   const navigate = useNavigate();
-  const volverAtras = () => navigate('/pagina2');
+  const { tipo, categoria, tema } = useParams();
+  const volverAtras = () => navigate(`/pagina2/${tipo}/${categoria}`);
+
+  const [contenido, setContenido] = useState([]);
   const [index, setIndex] = useState(0);
   const [resultado, setResultado] = useState(null);
 
-  const letraActual = letras[index];
-
-  const normalizar = (texto) =>
-    texto
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-zñ]/gi, "")
-      .toLowerCase();
+  useEffect(() => {
+    import(`../utils/contenido/niños/${tema}.json`)
+      .then((mod) => setContenido(mod.default))
+      .catch((err) => {
+        console.error("Error al cargar contenido:", err);
+        navigate("/pagina0");
+      });
+  }, [tema, navigate]);
 
   const siguiente = () => {
-    if (index < letras.length - 1) {
+    if (index < contenido.length - 1) {
       setIndex(index + 1);
       setResultado(null);
     }
   };
 
   const verificarPronunciacion = () => {
-    iniciarPronunciacion((transcript) => {
-      console.log("Texto capturado:", transcript);
+    const itemActual = contenido[index];
+    const esperado = itemActual.letra || itemActual.texto;
 
-      if (transcript === "ERROR") {
-        setResultado("error");
-        return;
-      }
-
-      const dicho = normalizar(transcript);
-      const esperada = normalizar(letraActual.letra);
-      const detectada = dicho.slice(-1);
-
-      console.log("Letra detectada:", detectada, "| Esperada:", esperada);
-
-      setResultado(detectada === esperada ? "correcta" : "incorrecta");
-      detenerPronunciacion();
+    iniciarPronunciacion(esperado, tema, (resultadoFinal) => {
+      setResultado(resultadoFinal);
     });
   };
 
   const reproducirAudio = () => {
-    const audio = new Audio(letraActual.audio);
+    const audio = new Audio(contenido[index].audio);
     audio.play().catch((e) => console.warn("Error al reproducir:", e.message));
   };
 
+  if (!contenido.length) return <p>Cargando contenido...</p>;
+
+  const itemActual = contenido[index];
+
   return (
     <div className="letras-container" key={index}>
-      <button className="boton-volver-pagina2" onClick={volverAtras}>Volver atrás</button>
-      <h1 className="letras-titulo">Pronunciación de letras</h1>
+      <button className="boton-volver-pagina2" onClick={volverAtras}>
+        Volver atrás
+      </button>
+      <h1 className="letras-titulo">Pronunciación de {tema}</h1>
+
       <div className="letras-cuadro">
-        <img src={letraActual.imagen} alt={letraActual.letra} />
+        <img
+          src={itemActual.imagen}
+          alt={itemActual.letra || itemActual.texto}
+        />
       </div>
-      <h2 className="letras-subtitulo">Letra: {letraActual.letra}</h2>
+
+      <h2 className="letras-subtitulo">
+        {tema === "letras"
+          ? `Di: letra ${itemActual.letra}`
+          : tema === "numeros"
+          ? `Di: número ${itemActual.letra}`
+          : itemActual.letra || itemActual.letra}
+      </h2>
 
       <div className="letras-botones-container">
         <button
@@ -70,24 +78,21 @@ function LetrasAudio() {
         >
           Escuchar sonido
         </button>
-
         <button
           className="letras-boton letras-boton-pronunciar"
           onClick={verificarPronunciacion}
         >
-          Pronunciar letra
+          Pronunciar
         </button>
-
         <button
           className="letras-boton letras-boton-siguiente"
           onClick={siguiente}
-          disabled={index >= letras.length - 1}
+          disabled={index >= contenido.length - 1}
         >
-          Siguiente letra
+          Siguiente
         </button>
       </div>
 
-      {/* Contenedor de mensaje */}
       <div className="letras-mensaje">
         {resultado === "correcta" && (
           <p className="mensaje-correcto">✅ ¡Pronunciación correcta!</p>

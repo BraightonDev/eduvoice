@@ -4,7 +4,7 @@ import { iniciarReconocimientoVoz, detenerReconocimientoVoz } from './logica2/lo
 import './Pagina2.css';
 
 const Pagina2 = () => {
-  const { tipo, categoria } = useParams(); // ← Usa los parámetros dinámicos
+  const { tipo } = useParams(); // ← Usa los parámetros dinámicos
   const [escuchando, setEscuchando] = useState(false);
   const navigate = useNavigate();
 
@@ -17,9 +17,9 @@ const Pagina2 = () => {
     setEscuchando(!escuchando);
   };
 
-  // Cambia la ruta según el tipo y categoría
+  // ✅ Recibe el tema como argumento dinámico
   const irALectura = (tema) => {
-    navigate(`/contenido/${tipo}/${categoria}/${tema}`);
+    navigate(`/contenido/${tipo}/niños/${tema}`);
   };
 
   const volverAtras = () => navigate(`/pagina1/${tipo}`);
