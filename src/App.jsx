@@ -13,9 +13,9 @@ function App() {
       <Routes>
         <Route path="/" element={<PaginaLogo />} />
         {/* Placeholder para futuras páginas */}
-        <Route path="/pagina1" element={<Pagina1/>} />
         <Route path="/pagina0" element={<Pagina0 />} />
-        <Route path="/pagina2" element={<Pagina2 />} />
+        <Route path="/pagina1/:tipo" element={<Pagina1 />} />
+        <Route path="/pagina2/:tipo/:categoria" element={<Pagina2 />} />
         <Route path="/pagina3" element={<div>Página 3</div>} />
         <Route path="/letras-audio" element={<LetrasAudio />} />
       </Routes>

@@ -19,8 +19,8 @@ const Pagina0 = () => {
     setEscuchando(!escuchando);
   };
 
-  const irAPagina1 = () => navigate("/pagina1");
-  const irAPagina3 = () => navigate("/pagina3");
+  const irAPagina1 = () => navigate("/pagina1/pronunciacion");
+  const irAPagina3 = () => navigate("/pagina1/escritura");
 
   return (
     <div className="contenedor-pagina0">
