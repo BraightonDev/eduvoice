@@ -1,18 +1,19 @@
 html, body {
   margin: 0;
   padding: 0;
+  width: 100%;
   height: 100%;
-  overflow: hidden; /* Evita scroll innecesario */
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: white; /* el marco será blanco */
 }
 
 #root {
   width: 100%;
-  height: 100%;
-  padding: 2rem; /* Borde blanco interno */
+  min-height: 100vh;
+  padding: 20px; /* Este es el "marco" blanco */
   box-sizing: border-box;
   background-color: white;
-  text-align: center;
-  overflow-x: hidden; /* Evita el scroll horizontal */
 }
 
 /* Si el root contiene una sección o contenedor principal */
@@ -23,6 +24,7 @@ html, body {
   padding: 2rem;
   box-sizing: border-box;
   overflow: hidden;
+  border-radius: 20px;
 }
 
 /* Logo */
@@ -61,4 +63,3 @@ html, body {
 .read-the-docs {
   color: #888;
 }
-

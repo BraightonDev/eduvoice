@@ -2,10 +2,11 @@ let reconocimiento;
 let escuchando = false;
 let navegarA = null; // Guardamos el navigate aquí
 
-if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
   reconocimiento = new SpeechRecognition();
-  reconocimiento.lang = 'es-ES';
+  reconocimiento.lang = "es-ES";
   reconocimiento.continuous = false;
 
   reconocimiento.onresult = function (event) {
@@ -14,10 +15,10 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
 
     if (navegarA) {
       if (texto.includes("pronunciación")) {
-        navegarA("/pagina2");
+        navegarA("/pagina1");
       } else if (texto.includes("escritura")) {
         navegarA("/pagina3");
-      }else {
+      } else {
         alert("No se reconoció un comando válido.");
       }
     }

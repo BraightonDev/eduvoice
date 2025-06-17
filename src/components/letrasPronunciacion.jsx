@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import letras from "../utils/contenido/niños/letras.json";
-import { iniciarPronunciacion, detenerPronunciacion } from "./logicaPronunciacion";
+import {
+  iniciarPronunciacion,
+  detenerPronunciacion,
+} from "./logicaPronunciacion";
 import "./letrasPronunciacion.css";
 
 function LetrasAudio() {
@@ -34,7 +37,7 @@ function LetrasAudio() {
 
       const dicho = normalizar(transcript);
       const esperada = normalizar(letraActual.letra);
-      const detectada = dicho.slice(-1); // más seguro que charAt
+      const detectada = dicho.slice(-1);
 
       console.log("Letra detectada:", detectada, "| Esperada:", esperada);
 
@@ -50,34 +53,48 @@ function LetrasAudio() {
 
   return (
     <div className="letras-container" key={index}>
-      <h1>Pronunciación de letras</h1>
-      <h2 className="text-2xl mb-4">Letra: {letraActual.letra}</h2>
+      <h1 className="letras-titulo">Pronunciación de letras</h1>
+      <div className="letras-cuadro">
+        <img src={letraActual.imagen} alt={letraActual.letra} />
+      </div>
+      <h2 className="letras-subtitulo">Letra: {letraActual.letra}</h2>
 
-      <button className="boton boton-escuchar" onClick={reproducirAudio}>
-        Escuchar sonido
-      </button>
+      <div className="letras-botones-container">
+        <button
+          className="letras-boton letras-boton-escuchar"
+          onClick={reproducirAudio}
+        >
+          Escuchar sonido
+        </button>
 
-      <button className="boton boton-pronunciar" onClick={verificarPronunciacion}>
-        Pronunciar letra
-      </button>
+        <button
+          className="letras-boton letras-boton-pronunciar"
+          onClick={verificarPronunciacion}
+        >
+          Pronunciar letra
+        </button>
 
-      {resultado === "correcta" && (
-        <p style={{ color: "green", fontWeight: "bold" }}>✅ ¡Pronunciación correcta!</p>
-      )}
-      {resultado === "incorrecta" && (
-        <p style={{ color: "red", fontWeight: "bold" }}>❌ Intenta de nuevo</p>
-      )}
-      {resultado === "error" && (
-        <p style={{ color: "orange", fontWeight: "bold" }}>⚠️ Error al reconocer la voz</p>
-      )}
+        <button
+          className="letras-boton letras-boton-siguiente"
+          onClick={siguiente}
+          disabled={index >= letras.length - 1}
+        >
+          Siguiente letra
+        </button>
+      </div>
 
-      <button
-        className="boton boton-siguiente"
-        onClick={siguiente}
-        disabled={index >= letras.length - 1}
-      >
-        Siguiente letra
-      </button>
+      {/* Contenedor de mensaje */}
+      <div className="letras-mensaje">
+        {resultado === "correcta" && (
+          <p className="mensaje-correcto">✅ ¡Pronunciación correcta!</p>
+        )}
+        {resultado === "incorrecta" && (
+          <p className="mensaje-incorrecto">❌ Intenta de nuevo</p>
+        )}
+        {resultado === "error" && (
+          <p className="mensaje-error">⚠️ Error al reconocer la voz</p>
+        )}
+      </div>
     </div>
   );
 }

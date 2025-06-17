@@ -1,45 +1,128 @@
 .letras-container {
-  padding: 20px;
+  background-color: #269ec2;
+  border-radius: 20px;
+  padding: 2rem;
+  box-sizing: border-box;
+  color: white;
+  min-height: 93vh;
+  width: 100%;
   text-align: center;
-  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+.letras-cuadro{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid #ccc;
+  width: 100px;
+  height: 100px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #f8f8f8;
+  border-radius: 30px;
+  margin: 0%;
 }
 
-.letras-container h1 {
-  font-size: 28px;
-  margin-bottom: 20px;
-}
-
-.nivel-button {
-  padding: 8px 16px;
-  margin: 0 5px;
-  border-radius: 6px;
-  background-color: #ddd;
-  cursor: pointer;
-  border: none;
-}
-
-.nivel-button.active {
-  background-color: #2563eb;
+.letras-titulo {
+  font-size: 2.5rem;
+  margin: 0.5rem;
+  font-weight: bold;
   color: white;
 }
 
-.boton {
-  padding: 10px 20px;
-  margin: 10px 5px;
-  border: none;
-  border-radius: 6px;
+.letras-subtitulo {
+  font-size: 2rem;
+  margin-bottom: 1rem;
   color: white;
+}
+
+/* Fila de botones */
+.letras-botones-container {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+/* Botones individuales con colores combinados */
+.letras-boton {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: bold;
   cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.3s;
+  color: white;
 }
 
-.boton-escuchar {
-  background-color: #3b82f6;
+.letras-boton-escuchar {
+  background-color: #1b6b8f; /* azul oscuro */
 }
 
-.boton-pronunciar {
-  background-color: #8b5cf6;
+.letras-boton-pronunciar {
+  background-color: #8b5cf6; /* morado */
 }
 
-.boton-siguiente {
-  background-color: #10b981;
+.letras-boton-siguiente {
+  background-color: #10b981; /* verde */
+}
+
+.letras-boton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px black;
+  opacity: 0.9;
+}
+
+/* Resultado de pronunciación */
+.letras-container p {
+  font-size: 1.2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .letras-titulo {
+    font-size: 2rem;
+  }
+
+  .letras-subtitulo {
+    font-size: 1.5rem;
+  }
+
+  .letras-botones-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .letras-boton {
+    width: 100%;
+  }
+}
+
+.letras-mensaje {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 10px;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #ffffffcc;
+  font-weight: bold;
+  font-size: 18px;
+  text-align: center;
+}
+
+.mensaje-correcto {
+  color: #16a34a; /* verde */
+}
+
+.mensaje-incorrecto {
+  color: #dc2626; /* rojo */
+}
+
+.mensaje-error {
+  color: #f59e0b; /* naranja */
 }

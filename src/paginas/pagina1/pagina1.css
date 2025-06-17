@@ -1,0 +1,97 @@
+/* Estilo general del contenedor */
+.contenedor-pagina1 {
+  position: relative;
+  background-color: #269ec2;
+  min-height: 93vh;
+  width: 100%;
+  padding: 2rem;
+  box-sizing: border-box;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+}
+
+/* Título */
+.titulo-pagina1 {
+  font-size: 2.5rem;
+  margin: 0px;
+  color: white;
+}
+
+/* Contenedor de opciones */
+.opciones-pagina1 {
+  display: flex;
+  justify-content: center;
+  gap: 0px;
+  flex-wrap: wrap;
+  margin-bottom: 120px;
+}
+
+/* Cuadro de cada categoría */
+.cuadro-pagina1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 25px;
+  border: 2px solid #ccc;
+  border-radius: 15px;
+  cursor: pointer;
+  width: 220px;
+  height: 280px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #f8f8f8;
+  border-radius: 50px;
+}
+
+.cuadro-pagina1:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px black;
+}
+
+/* Imágenes más grandes */
+.icono-pagina1 {
+  width: 160px;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+/* Texto debajo de cada imagen */
+.cuadro-pagina1 p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #269ec2;
+}
+
+@media (max-width: 600px) {
+  .opciones-pagina1 {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .cuadro-pagina1 {
+    width: 80%;
+    height: auto;
+  }
+
+  .icono-pagina1 {
+    width: 140px;
+  }
+}
+.opciones-pagina1 .cuadro-pagina1 {
+  margin: 0 9rem;
+}
+.microfono-pagina1 img {
+  width: 100px;
+  height: 100px;
+}
+
+/* Micrófono al fondo */
+.microfono-pagina1 {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
+}

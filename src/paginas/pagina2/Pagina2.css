@@ -1,14 +1,20 @@
-.contenedor {
-  background-color: #269ec2;
-  height: 100vh;
+.contenedor-pagina2 {
   position: relative;
-  padding: 20px;
-  color: white;
-  text-align: center;
+  background-color: #269ec2;
+  min-height: 93vh;
+  width: 100%;
+  padding: 2rem;
   box-sizing: border-box;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  color: white;
 }
 
-.boton-volver {
+/* Botón Volver */
+.boton-volver-pagina2 {
   position: absolute;
   top: 20px;
   left: 30px;
@@ -21,54 +27,103 @@
   font-weight: bold;
 }
 
-.titulo {
-  font-size: 40px;
-  margin-top: 10px;
-  margin-bottom: 5px; /* Reducido */
-}
-
-.subtitulo {
-  font-size: 35px;
+/* Títulos */
+.titulo-pagina2 {
+  font-size: 2.5rem;
   font-weight: bold;
-  margin-top: 2; 
-  margin-bottom: 20px;
+  margin: 0;
 }
 
-.categorias {
+.subtitulo-pagina2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: white;
+  margin: 0;
+}
+
+/* Categorías */
+.categorias-pagina2 {
   display: flex;
-  justify-content: space-between;
-  padding: 0 50px;
-  margin-top: 20px;
+  justify-content: space-around;
+  align-items: center;
+  gap: 2rem;
+  flex-grow: 1;
+  margin: 0px;
 }
 
 .columna {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px;
+  gap: 2rem;
 }
 
-.categoria {
-  text-align: center;
+/* Tarjetas */
+.categoria-pagina2 {
+  background-color: white;
+  border-radius: 30px;
+  padding: 1.5rem;
+  width: 180px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  color: #269ec2; /* texto dentro de tarjetas en negro */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.categoria-pagina2:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px black;
+}
+
+.categoria-pagina2 img {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 1rem;
+}
+
+.categoria-pagina2 p {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* Micrófono */
+.microfono-pagina2 {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   cursor: pointer;
 }
 
-.categoria img {
-  width: 150px;
-  height: 150px;
-}
-
-.categoria p {
-  margin-top: 10px;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.microfono {
-  margin-top: 320px;
-}
-
-.microfono img {
+.microfono-pagina2 img {
   width: 100px;
   height: 100px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .categorias-pagina2 {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .categoria-pagina2 {
+    width: 80%;
+  }
+
+  .titulo-pagina2 {
+    font-size: 2.5rem;
+  }
+
+  .subtitulo-pagina2 {
+    font-size: 2rem;
+  }
+
+  .microfono-pagina2 img {
+    width: 80px;
+    height: 80px;
+  }
 }
