@@ -1,6 +1,8 @@
+// src/paginas/logica0/pagina0.js
+
 let reconocimiento;
 let escuchando = false;
-let navegarA = null; // Guardamos el navigate aquí
+let navegarA = null;
 
 if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
   const SpeechRecognition =
@@ -15,9 +17,9 @@ if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
 
     if (navegarA) {
       if (texto.includes("pronunciación")) {
-        navegarA("/pagina1");
+        navegarA("/pagina1/pronunciacion");
       } else if (texto.includes("escritura")) {
-        navegarA("/pagina3");
+        navegarA("/pagina1/escritura");
       } else {
         alert("No se reconoció un comando válido.");
       }

@@ -16,14 +16,13 @@ const Pagina1 = () => {
     if (escuchando) {
       detenerReconocimientoVoz();
     } else {
-      iniciarReconocimientoVoz(navigate);
+      iniciarReconocimientoVoz(navigate, tipo); // ✅ Se pasa 'tipo' para construir la ruta correctamente
     }
     setEscuchando(!escuchando);
   };
 
-  // Redirige a una ruta basada en el tipo y la categoría
   const irACategoria = (categoria) => {
-    navigate(`/pagina2/${tipo}/${categoria}`); // Ej: /pagina2/pronunciacion/niños
+    navigate(`/pagina2/${tipo}/${categoria}`); // Ej: /pagina2/pronunciacion/niño
   };
 
   const volverAtras = () => navigate("/pagina0");
@@ -41,7 +40,7 @@ const Pagina1 = () => {
       <div className="opciones-pagina1">
         <div className="cuadro-pagina1" onClick={() => irACategoria("niño")}>
           <img
-            src="/public/iconos/iconos1/niños.png"
+            src="/iconos/iconos1/niños.png"
             alt="Niños"
             className="icono-pagina1"
           />
@@ -51,13 +50,13 @@ const Pagina1 = () => {
         <div className="microfono-pagina1" onClick={manejarMicrofono}>
           <img
             src="https://cdn-icons-png.freepik.com/512/4903/4903738.png"
-            alt="Microfono"
+            alt="Micrófono"
           />
         </div>
 
         <div className="cuadro-pagina1" onClick={() => irACategoria("adulto")}>
           <img
-            src="/public/iconos/iconos1/adultos.png"
+            src="/iconos/iconos1/adultos.png"
             alt="Adultos"
             className="icono-pagina1"
           />

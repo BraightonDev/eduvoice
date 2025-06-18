@@ -1,10 +1,14 @@
+// src/paginas/Pagina2.jsx
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { iniciarReconocimientoVoz, detenerReconocimientoVoz } from './logica2/logica2';
+import {
+  iniciarReconocimientoVoz,
+  detenerReconocimientoVoz,
+} from './logica2/logica2';
 import './pagina2.css';
 
 const Pagina2 = () => {
-  const { tipo, categoria } = useParams();
+  const { tipo, categoria } = useParams(); // Ej: tipo = "pronunciacion", categoria = "niño"
   const [escuchando, setEscuchando] = useState(false);
   const navigate = useNavigate();
 
@@ -12,12 +16,11 @@ const Pagina2 = () => {
     if (escuchando) {
       detenerReconocimientoVoz();
     } else {
-      iniciarReconocimientoVoz(navigate);
+      iniciarReconocimientoVoz(navigate, tipo, categoria); // ✅ se pasan tipo y categoria
     }
     setEscuchando(!escuchando);
   };
 
-  // ✅ Recibe el tema como argumento dinámico
   const irALectura = (tema) => {
     navigate(`/contenido/${tipo}/${categoria}/${tema}`);
   };
@@ -26,7 +29,9 @@ const Pagina2 = () => {
 
   return (
     <div className="contenedor-pagina2">
-      <button className="boton-volver-pagina1" onClick={volverAtras}>Volver atrás</button>
+      <button className="boton-volver-pagina1" onClick={volverAtras}>
+        Volver atrás
+      </button>
       <h1 className="titulo-pagina2">
         Mejora tu {tipo === 'pronunciacion' ? 'pronunciación' : 'escritura'}
       </h1>
@@ -44,7 +49,10 @@ const Pagina2 = () => {
         </div>
 
         <div className="microfono-pagina2" onClick={manejarMicrofono}>
-          <img src="https://cdn-icons-png.freepik.com/512/4903/4903738.png" alt="Micrófono" />
+          <img
+            src="https://cdn-icons-png.freepik.com/512/4903/4903738.png"
+            alt="Micrófono"
+          />
         </div>
 
         <div className="columna derecha-pagina2">
