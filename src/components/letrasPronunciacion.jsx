@@ -56,7 +56,7 @@ function LetrasAudio() {
       navigate("/pagina0");
     } finally {
       clearInterval(intervalo);
-      setTimeout(() => setCargando(false), 500); // pequeño delay para mostrar barra completa
+      setTimeout(() => setCargando(false), 2000); // en lugar de 500 ms
     }
   };
 

@@ -158,8 +158,35 @@
   margin-bottom: 1rem;
 }
 
+.letras-cargando p:last-child {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+
+
 @keyframes girar {
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Barra de progreso */
+.barra-progreso {
+  width: 80%;
+  max-width: 400px;
+  height: 12px;
+  background-color: #ffffff55; /* fondo translúcido */
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 1rem auto;
+  border: 1px solid #fff;
+}
+
+.barra-progreso-inner {
+  height: 100%;
+  width: 0%;
+  background-color: #ffffff; /* blanco visible al llenar */
+  transition: width 0.3s ease;
 }
