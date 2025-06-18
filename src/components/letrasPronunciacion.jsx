@@ -9,38 +9,61 @@ function LetrasAudio() {
   const [contenido, setContenido] = useState([]);
   const [index, setIndex] = useState(0);
   const [resultado, setResultado] = useState(null);
+  const [cargando, setCargando] = useState(true); // Nuevo estado
+  const [progreso, setProgreso] = useState(0);
 
   useEffect(() => {
-    const obtenerContenidoDesdeAPI = async () => {
-      try {
-        let url = "";
+  let intervalo;
 
-        if (tema === "palabras") {
-          url = `https://eduvoice-backend.onrender.com/api/palabras/lista-aleatoria?categoria=${categoria}`;
-        } else if (tema === "letras") {
-          url = `https://eduvoice-backend.onrender.com/api/letras/lista-aleatoria`;
-        } else if (tema === "numeros") {
-          url = `https://eduvoice-backend.onrender.com/api/numeros/lista-aleatoria`;
-        } else if(tema === "frases") {
-          url = `https://eduvoice-backend.onrender.com/api/frases/lista-aleatoria?categoria=${categoria}`;
-        } else {
-          throw new Error("Tema no válido");
-        }
+  setCargando(true); // activa el estado de carga
+  setProgreso(0);
 
-        const respuesta = await fetch(url);
-        if (!respuesta.ok) throw new Error("Error en la respuesta del servidor");
-
-        const datos = await respuesta.json();
-        console.log("✅ Respuesta de la API:", datos);
-        setContenido(datos);
-      } catch (error) {
-        console.error("Error al obtener datos desde API:", error);
-        navigate("/pagina0");
+  // Simular barra de progreso
+  intervalo = setInterval(() => {
+    setProgreso((prev) => {
+      if (prev >= 90) {
+        clearInterval(intervalo);
+        return prev;
       }
-    };
+      return prev + 5;
+    });
+  }, 200);
 
-    obtenerContenidoDesdeAPI();
-  }, [categoria, tema, navigate]);
+  const obtenerContenidoDesdeAPI = async () => {
+    try {
+      let url = "";
+
+      if (tema === "palabras") {
+        url = `https://eduvoice-backend.onrender.com/api/palabras/lista-aleatoria?categoria=${categoria}`;
+      } else if (tema === "letras") {
+        url = `https://eduvoice-backend.onrender.com/api/letras/lista-aleatoria`;
+      } else if (tema === "numeros") {
+        url = `https://eduvoice-backend.onrender.com/api/numeros/lista-aleatoria`;
+      } else if (tema === "frases") {
+        url = `https://eduvoice-backend.onrender.com/api/frases/lista-aleatoria?categoria=${categoria}`;
+      } else {
+        throw new Error("Tema no válido");
+      }
+
+      const respuesta = await fetch(url);
+      if (!respuesta.ok) throw new Error("Error en la respuesta del servidor");
+
+      const datos = await respuesta.json();
+      setContenido(datos);
+      setProgreso(100); // al llegar la respuesta, poner al 100%
+    } catch (error) {
+      console.error("Error al obtener datos desde API:", error);
+      navigate("/pagina0");
+    } finally {
+      clearInterval(intervalo);
+      setTimeout(() => setCargando(false), 500); // pequeño delay para mostrar barra completa
+    }
+  };
+
+  obtenerContenidoDesdeAPI();
+
+  return () => clearInterval(intervalo); // limpiar si el componente se desmonta
+}, [categoria, tema, navigate]);
 
   const volverAtras = () => navigate(`/pagina2/${tipo}/${categoria}`);
 
@@ -58,17 +81,8 @@ function LetrasAudio() {
 
     if (tema === "numeros") {
       const mapaNumeros = {
-        "0": "cero",
-        "1": "uno",
-        "2": "dos",
-        "3": "tres",
-        "4": "cuatro",
-        "5": "cinco",
-        "6": "seis",
-        "7": "siete",
-        "8": "ocho",
-        "9": "nueve",
-        "10": "diez"
+        "0": "cero", "1": "uno", "2": "dos", "3": "tres", "4": "cuatro",
+        "5": "cinco", "6": "seis", "7": "siete", "8": "ocho", "9": "nueve", "10": "diez"
       };
 
       const formaTexto = mapaNumeros[valor];
@@ -98,20 +112,36 @@ function LetrasAudio() {
     }
   };
 
-  if (!contenido.length) return <p>Cargando contenido...</p>;
+  // 🌀 Mostrar animación de carga
+if (cargando || !contenido.length) {
+  return (
+    <div className="letras-container letras-cargando">
+      <p>Cargando {tema}...</p>
+
+      <div className="barra-progreso">
+        <div
+          className="barra-progreso-inner"
+          style={{ width: `${progreso}%` }}
+        ></div>
+      </div>
+
+      <p>{progreso}%</p>
+    </div>
+  );
+}
 
   const itemActual = contenido[index];
 
   const obtenerInstruccion = () => {
-  const valor = itemActual.valor;
-  const texto = itemActual.texto;
+    const valor = itemActual.valor;
+    const texto = itemActual.texto;
 
-  if (tema === "letras") return `Di: letra ${valor}`;
-  if (tema === "palabras") return `Di:  ${valor}`;
-  if (tema === "numeros") return `Di: ${valor} (${texto})`;
+    if (tema === "letras") return `Di: letra ${valor}`;
+    if (tema === "palabras") return `Di: ${valor}`;
+    if (tema === "numeros") return `Di: ${valor} (${texto})`;
 
-  return `Di: ${valor}`;
-};
+    return `Di: ${valor}`;
+  };
 
   return (
     <div className="letras-container" key={index}>
