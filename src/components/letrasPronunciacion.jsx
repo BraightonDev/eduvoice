@@ -16,13 +16,13 @@ function LetrasAudio() {
         let url = "";
 
         if (tema === "palabras") {
-          url = `http://localhost:3304/api/palabras/lista-aleatoria?categoria=${categoria}`;
+          url = `https://eduvoice-backend.onrender.com/api/palabras/lista-aleatoria?categoria=${categoria}`;
         } else if (tema === "letras") {
-          url = `http://localhost:3304/api/letras/lista-aleatoria`;
+          url = `https://eduvoice-backend.onrender.com/api/letras/lista-aleatoria`;
         } else if (tema === "numeros") {
-          url = `http://localhost:3304/api/numeros/lista-aleatoria`;
+          url = `https://eduvoice-backend.onrender.com/api/numeros/lista-aleatoria`;
         } else if(tema === "frases") {
-          url = `http://localhost:3304/api/frases/lista-aleatoria?categoria=${categoria}`;
+          url = `https://eduvoice-backend.onrender.com/api/frases/lista-aleatoria?categoria=${categoria}`;
         } else {
           throw new Error("Tema no válido");
         }
