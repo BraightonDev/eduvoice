@@ -29,44 +29,61 @@ function LetrasAudio() {
   };
 
   const verificarPronunciacion = () => {
-    const itemActual = contenido[index];
-    const valor = (itemActual.letra || itemActual.texto).toLowerCase();
+  const itemActual = contenido[index];
+  const valor = (itemActual.letra || itemActual.texto).toLowerCase();
 
-    let formasEsperadas = [valor];
+  let formasEsperadas = [valor];
 
-    if (tema === "numeros") {
-      const mapaNumeros = {
-        "0": "cero",
-        "1": "uno",
-        "2": "dos",
-        "3": "tres",
-        "4": "cuatro",
-        "5": "cinco",
-        "6": "seis",
-        "7": "siete",
-        "8": "ocho",
-        "9": "nueve",
-        "10": "diez"
-      };
+  if (tema === "numeros") {
+    const mapaNumeros = {
+      "0": "cero",
+      "1": "uno",
+      "2": "dos",
+      "3": "tres",
+      "4": "cuatro",
+      "5": "cinco",
+      "6": "seis",
+      "7": "siete",
+      "8": "ocho",
+      "9": "nueve",
+      "10": "diez"
+    };
 
-      const formaTexto = mapaNumeros[valor];
-      const formaNumero = Object.keys(mapaNumeros).find(
-        (num) => mapaNumeros[num] === valor
-      );
+    const formaTexto = mapaNumeros[valor];
+    const formaNumero = Object.keys(mapaNumeros).find(
+      (num) => mapaNumeros[num] === valor
+    );
 
-      if (formaTexto && !formasEsperadas.includes(formaTexto)) {
-        formasEsperadas.push(formaTexto);
-      }
-
-      if (formaNumero && !formasEsperadas.includes(formaNumero)) {
-        formasEsperadas.push(formaNumero);
-      }
+    if (formaTexto && !formasEsperadas.includes(formaTexto)) {
+      formasEsperadas.push(formaTexto);
     }
 
-    iniciarPronunciacion(formasEsperadas, tema, (resultadoFinal) => {
-      setResultado(resultadoFinal);
-    });
-  };
+    if (formaNumero && !formasEsperadas.includes(formaNumero)) {
+      formasEsperadas.push(formaNumero);
+    }
+  }
+
+  if (tema === "letras") {
+    const equivalenciasLetras = {
+      "b": ["b", "be"],
+      "c": ["c", "ce", "se"],
+      "v": ["v", "ve"],
+      "y": ["y", "ye", "i griega"],
+      "h": ["h", "hache"],
+      // puedes añadir más si quieres
+    };
+
+    const extras = equivalenciasLetras[valor];
+    if (extras) {
+      formasEsperadas.push(...extras);
+    }
+  }
+
+  iniciarPronunciacion(formasEsperadas, tema, (resultadoFinal) => {
+    setResultado(resultadoFinal);
+  });
+};
+
 
   const reproducirAudio = () => {
     const audio = new Audio(contenido[index].audio);
