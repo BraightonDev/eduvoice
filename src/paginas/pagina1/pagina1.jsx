@@ -28,7 +28,7 @@ const Pagina1 = () => {
 
   const volverAtras = () => navigate("/pagina0");
 
-  const titulo = tipo === "escritura" ? "Mejorar escritura" : "Mejorar pronunciación";
+  const titulo = tipo === "escritura" ? "mejorar escritura" : "mejorar pronunciación";
 
   return (
     <div className="contenedor-pagina1">
