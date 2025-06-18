@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { iniciarReconocimientoVoz, detenerReconocimientoVoz } from './logica2/logica2';
-import './Pagina2.css';
+import './pagina2.css';
 
 const Pagina2 = () => {
   const { tipo, categoria } = useParams();
