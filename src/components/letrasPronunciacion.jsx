@@ -9,42 +9,47 @@ function LetrasAudio() {
   const [contenido, setContenido] = useState([]);
   const [index, setIndex] = useState(0);
   const [resultado, setResultado] = useState(null);
-  const [cargando, setCargando] = useState(true); // Nuevo estado
+  const [cargando, setCargando] = useState(true);
+  const [porcentajeCarga, setPorcentajeCarga] = useState(0);
 
   useEffect(() => {
-  const obtenerContenidoDesdeAPI = async () => {
-    try {
-      let url = "";
+    const obtenerContenidoDesdeAPI = async () => {
+      try {
+        let url = "";
+        if (tema === "palabras") {
+          url = `https://eduvoice-backend.onrender.com/api/palabras/lista-aleatoria?categoria=${categoria}`;
+        } else if (tema === "letras") {
+          url = `https://eduvoice-backend.onrender.com/api/letras/lista-aleatoria`;
+        } else if (tema === "numeros") {
+          url = `https://eduvoice-backend.onrender.com/api/numeros/lista-aleatoria`;
+        } else if (tema === "frases") {
+          url = `https://eduvoice-backend.onrender.com/api/frases/lista-aleatoria?categoria=${categoria}`;
+        } else {
+          throw new Error("Tema no válido");
+        }
 
-      if (tema === "palabras") {
-        url = `https://eduvoice-backend.onrender.com/api/palabras/lista-aleatoria?categoria=${categoria}`;
-      } else if (tema === "letras") {
-        url = `https://eduvoice-backend.onrender.com/api/letras/lista-aleatoria`;
-      } else if (tema === "numeros") {
-        url = `https://eduvoice-backend.onrender.com/api/numeros/lista-aleatoria`;
-      } else if (tema === "frases") {
-        url = `https://eduvoice-backend.onrender.com/api/frases/lista-aleatoria?categoria=${categoria}`;
-      } else {
-        throw new Error("Tema no válido");
+        const respuesta = await fetch(url);
+        if (!respuesta.ok) throw new Error("Error en la respuesta del servidor");
+
+        const datos = await respuesta.json();
+        setContenido(datos);
+
+        let progreso = 0;
+        const intervalo = setInterval(() => {
+          progreso += 5;
+          setPorcentajeCarga(progreso);
+          if (progreso >= 100) clearInterval(intervalo);
+        }, 100);
+
+        setTimeout(() => setCargando(false), 2000);
+      } catch (error) {
+        console.error("Error al obtener datos:", error);
+        navigate("/pagina0");
       }
+    };
 
-      const respuesta = await fetch(url);
-      if (!respuesta.ok) throw new Error("Error en la respuesta del servidor");
-
-      const datos = await respuesta.json();
-      setContenido(datos);
-
-      // 🔄 Cambio: sin delay artificial
-      setCargando(false);
-    } catch (error) {
-      console.error("Error al obtener datos desde API:", error);
-      navigate("/pagina0");
-    }
-  };
-
-  obtenerContenidoDesdeAPI();
-}, [categoria, tema, navigate]);
-
+    obtenerContenidoDesdeAPI();
+  }, [categoria, tema, navigate]);
 
   const volverAtras = () => navigate(`/pagina2/${tipo}/${categoria}`);
 
@@ -67,14 +72,11 @@ function LetrasAudio() {
       };
 
       const formaTexto = mapaNumeros[valor];
-      const formaNumero = Object.keys(mapaNumeros).find(
-        (num) => mapaNumeros[num] === valor
-      );
+      const formaNumero = Object.keys(mapaNumeros).find((num) => mapaNumeros[num] === valor);
 
       if (formaTexto && !formasEsperadas.includes(formaTexto)) {
         formasEsperadas.push(formaTexto);
       }
-
       if (formaNumero && !formasEsperadas.includes(formaNumero)) {
         formasEsperadas.push(formaNumero);
       }
@@ -93,17 +95,16 @@ function LetrasAudio() {
     }
   };
 
-  // 🌀 Mostrar animación de carga
- if (cargando || !contenido.length) {
-  return (
-    <div className="letras-container letras-cargando">
-      <div className="barra-progreso">
-        <div className="barra-progreso-inner"></div>
+  if (cargando || !contenido.length) {
+    return (
+      <div className="letras-container letras-cargando">
+        <div className="barra-progreso">
+          <div className="barra-progreso-inner" style={{ width: `${porcentajeCarga}%` }}></div>
+        </div>
+        <p>Cargando contenido, por favor espera...</p>
       </div>
-      <p>Cargando contenido, por favor espera...</p>
-    </div>
-  );
-}
+    );
+  }
 
   const itemActual = contenido[index];
 
@@ -132,6 +133,12 @@ function LetrasAudio() {
           <img src={itemActual.imagen} alt={itemActual.valor} />
         ) : (
           <p>(Sin imagen)</p>
+        )}
+        {/* Mostrar número y texto si es número */}
+        {tema === "numeros" && (
+          <p style={{ fontSize: "1.5rem", marginTop: "0.5rem" }}>
+            {itemActual.valor} - {itemActual.texto}
+          </p>
         )}
       </div>
 
