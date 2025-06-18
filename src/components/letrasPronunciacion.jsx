@@ -11,13 +11,23 @@ function LetrasAudio() {
   const [resultado, setResultado] = useState(null);
 
   useEffect(() => {
-    import(`../utils/contenido/niños/${tema}.json`)
-      .then((mod) => setContenido(mod.default))
-      .catch((err) => {
-        console.error("Error al cargar contenido:", err);
+    const obtenerContenidoDesdeAPI = async () => {
+      try {
+        const respuesta = await fetch(
+          "http://localhost:8080/api/palabras/lista-aleatoria/niños"
+        );
+        if (!respuesta.ok) throw new Error("Error en la respuesta del servidor");
+
+        const datos = await respuesta.json();
+        setContenido(datos);
+      } catch (error) {
+        console.error("Error al obtener datos desde API:", error);
         navigate("/pagina0");
-      });
-  }, [tema, navigate]);
+      }
+    };
+
+    obtenerContenidoDesdeAPI();
+  }, [navigate]);
 
   const volverAtras = () => navigate(`/pagina2/${tipo}/${categoria}`);
 
@@ -29,61 +39,44 @@ function LetrasAudio() {
   };
 
   const verificarPronunciacion = () => {
-  const itemActual = contenido[index];
-  const valor = (itemActual.letra || itemActual.texto).toLowerCase();
+    const itemActual = contenido[index];
+    const valor = itemActual.valor.toLowerCase();
 
-  let formasEsperadas = [valor];
+    let formasEsperadas = [valor];
 
-  if (tema === "numeros") {
-    const mapaNumeros = {
-      "0": "cero",
-      "1": "uno",
-      "2": "dos",
-      "3": "tres",
-      "4": "cuatro",
-      "5": "cinco",
-      "6": "seis",
-      "7": "siete",
-      "8": "ocho",
-      "9": "nueve",
-      "10": "diez"
-    };
+    if (tema === "numeros") {
+      const mapaNumeros = {
+        "0": "cero",
+        "1": "uno",
+        "2": "dos",
+        "3": "tres",
+        "4": "cuatro",
+        "5": "cinco",
+        "6": "seis",
+        "7": "siete",
+        "8": "ocho",
+        "9": "nueve",
+        "10": "diez"
+      };
 
-    const formaTexto = mapaNumeros[valor];
-    const formaNumero = Object.keys(mapaNumeros).find(
-      (num) => mapaNumeros[num] === valor
-    );
+      const formaTexto = mapaNumeros[valor];
+      const formaNumero = Object.keys(mapaNumeros).find(
+        (num) => mapaNumeros[num] === valor
+      );
 
-    if (formaTexto && !formasEsperadas.includes(formaTexto)) {
-      formasEsperadas.push(formaTexto);
+      if (formaTexto && !formasEsperadas.includes(formaTexto)) {
+        formasEsperadas.push(formaTexto);
+      }
+
+      if (formaNumero && !formasEsperadas.includes(formaNumero)) {
+        formasEsperadas.push(formaNumero);
+      }
     }
 
-    if (formaNumero && !formasEsperadas.includes(formaNumero)) {
-      formasEsperadas.push(formaNumero);
-    }
-  }
-
-  if (tema === "letras") {
-    const equivalenciasLetras = {
-      "b": ["b", "be"],
-      "c": ["c", "ce", "se"],
-      "v": ["v", "ve"],
-      "y": ["y", "ye", "i griega"],
-      "h": ["h", "hache"],
-      // puedes añadir más si quieres
-    };
-
-    const extras = equivalenciasLetras[valor];
-    if (extras) {
-      formasEsperadas.push(...extras);
-    }
-  }
-
-  iniciarPronunciacion(formasEsperadas, tema, (resultadoFinal) => {
-    setResultado(resultadoFinal);
-  });
-};
-
+    iniciarPronunciacion(formasEsperadas, tema, (resultadoFinal) => {
+      setResultado(resultadoFinal);
+    });
+  };
 
   const reproducirAudio = () => {
     const audio = new Audio(contenido[index].audio);
@@ -95,7 +88,7 @@ function LetrasAudio() {
   const itemActual = contenido[index];
 
   const obtenerInstruccion = () => {
-    const valor = itemActual.letra || itemActual.texto;
+    const valor = itemActual.valor;
     if (tema === "letras") return `Di: letra ${valor}`;
     if (tema === "numeros") return `Di: ${valor}`;
     return `Di: ${valor}`;
@@ -109,10 +102,7 @@ function LetrasAudio() {
       <h1 className="letras-titulo">Pronunciación de {tema}</h1>
 
       <div className="letras-cuadro">
-        <img
-          src={itemActual.imagen}
-          alt={itemActual.letra || itemActual.texto}
-        />
+        <img src={itemActual.imagen} alt={itemActual.valor} />
       </div>
 
       <h2 className="letras-subtitulo">{obtenerInstruccion()}</h2>
