@@ -96,15 +96,20 @@ function LetrasAudio() {
   };
 
   if (cargando || !contenido.length) {
-    return (
-      <div className="letras-container letras-cargando">
-        <div className="barra-progreso">
-          <div className="barra-progreso-inner" style={{ width: `${porcentajeCarga}%` }}></div>
-        </div>
-        <p>Cargando contenido, por favor espera...</p>
+  return (
+    <div className="letras-container letras-cargando">
+      <div className="barra-progreso">
+        <div
+          className="barra-progreso-inner"
+          style={{ width: `${porcentajeCarga}%` }}
+        ></div>
       </div>
-    );
-  }
+      <p>Cargando contenido, por favor espera...</p>
+      <p className="porcentaje-carga">{porcentajeCarga}%</p>
+    </div>
+  );
+}
+
 
   const itemActual = contenido[index];
 

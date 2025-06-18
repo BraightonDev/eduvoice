@@ -138,6 +138,9 @@
 .mensaje-error {
   color: #f59e0b; /* naranja */
 }
+
+/* ... estilos anteriores se mantienen ... */
+
 .letras-cargando {
   display: flex;
   flex-direction: column;
@@ -158,14 +161,6 @@
   margin-bottom: 1rem;
 }
 
-.letras-cargando p:last-child {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-top: 0.5rem;
-}
-
-
-
 @keyframes girar {
   to {
     transform: rotate(360deg);
@@ -182,11 +177,20 @@
   overflow: hidden;
   margin: 1rem auto;
   border: 1px solid #fff;
+  position: relative;
 }
 
 .barra-progreso-inner {
   height: 100%;
-  width: 0%;
-  background-color: #ffffff; /* blanco visible al llenar */
+  background-color: #ffffff;
   transition: width 0.3s ease;
+}
+
+/* Nuevo estilo para mostrar el número de porcentaje debajo */
+.porcentaje-carga {
+  margin-top: 8px;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 1px 1px 2px black;
 }
