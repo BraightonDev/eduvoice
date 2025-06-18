@@ -39,7 +39,7 @@ const Pagina1 = () => {
       <h1 className="titulo-pagina1">Selecciona una categoría para {titulo}</h1>
 
       <div className="opciones-pagina1">
-        <div className="cuadro-pagina1" onClick={() => irACategoria("niños")}>
+        <div className="cuadro-pagina1" onClick={() => irACategoria("niño")}>
           <img
             src="/src/paginas/pagina1/iconos1/niños.png"
             alt="Niños"
@@ -55,7 +55,7 @@ const Pagina1 = () => {
           />
         </div>
 
-        <div className="cuadro-pagina1" onClick={() => irACategoria("adultos")}>
+        <div className="cuadro-pagina1" onClick={() => irACategoria("adulto")}>
           <img
             src="/src/paginas/pagina1/iconos1/adultos.png"
             alt="Adultos"

@@ -13,12 +13,25 @@ function LetrasAudio() {
   useEffect(() => {
     const obtenerContenidoDesdeAPI = async () => {
       try {
-        const respuesta = await fetch(
-          "http://localhost:8080/api/palabras/lista-aleatoria/niños"
-        );
+        let url = "";
+
+        if (tema === "palabras") {
+          url = `http://localhost:3304/api/palabras/lista-aleatoria?categoria=${categoria}`;
+        } else if (tema === "letras") {
+          url = `http://localhost:3304/api/letras/lista-aleatoria`;
+        } else if (tema === "numeros") {
+          url = `http://localhost:3304/api/numeros/lista-aleatoria`;
+        } else if(tema === "frases") {
+          url = `http://localhost:3304/api/frases/lista-aleatoria?categoria=${categoria}`;
+        } else {
+          throw new Error("Tema no válido");
+        }
+
+        const respuesta = await fetch(url);
         if (!respuesta.ok) throw new Error("Error en la respuesta del servidor");
 
         const datos = await respuesta.json();
+        console.log("✅ Respuesta de la API:", datos);
         setContenido(datos);
       } catch (error) {
         console.error("Error al obtener datos desde API:", error);
@@ -27,7 +40,7 @@ function LetrasAudio() {
     };
 
     obtenerContenidoDesdeAPI();
-  }, [navigate]);
+  }, [categoria, tema, navigate]);
 
   const volverAtras = () => navigate(`/pagina2/${tipo}/${categoria}`);
 
@@ -40,8 +53,7 @@ function LetrasAudio() {
 
   const verificarPronunciacion = () => {
     const itemActual = contenido[index];
-    const valor = itemActual.valor.toLowerCase();
-
+    const valor = String(itemActual.valor).toLowerCase();
     let formasEsperadas = [valor];
 
     if (tema === "numeros") {
@@ -79,8 +91,11 @@ function LetrasAudio() {
   };
 
   const reproducirAudio = () => {
-    const audio = new Audio(contenido[index].audio);
-    audio.play().catch((e) => console.warn("Error al reproducir:", e.message));
+    const audioUrl = contenido[index]?.audio;
+    if (audioUrl) {
+      const audio = new Audio(audioUrl);
+      audio.play().catch((e) => console.warn("Error al reproducir:", e.message));
+    }
   };
 
   if (!contenido.length) return <p>Cargando contenido...</p>;
@@ -88,36 +103,40 @@ function LetrasAudio() {
   const itemActual = contenido[index];
 
   const obtenerInstruccion = () => {
-    const valor = itemActual.valor;
-    if (tema === "letras") return `Di: letra ${valor}`;
-    if (tema === "numeros") return `Di: ${valor}`;
-    return `Di: ${valor}`;
-  };
+  const valor = itemActual.valor;
+  const texto = itemActual.texto;
+
+  if (tema === "letras") return `Di: letra ${valor}`;
+  if (tema === "palabras") return `Di:  ${valor}`;
+  if (tema === "numeros") return `Di: ${valor} (${texto})`;
+
+  return `Di: ${valor}`;
+};
 
   return (
     <div className="letras-container" key={index}>
       <button className="boton-volver-pagina2" onClick={volverAtras}>
         Volver atrás
       </button>
+
       <h1 className="letras-titulo">Pronunciación de {tema}</h1>
+      <h2 className="letras-titulo">Categoría: {categoria}</h2>
 
       <div className="letras-cuadro">
-        <img src={itemActual.imagen} alt={itemActual.valor} />
+        {itemActual.imagen ? (
+          <img src={itemActual.imagen} alt={itemActual.valor} />
+        ) : (
+          <p>(Sin imagen)</p>
+        )}
       </div>
 
       <h2 className="letras-subtitulo">{obtenerInstruccion()}</h2>
 
       <div className="letras-botones-container">
-        <button
-          className="letras-boton letras-boton-escuchar"
-          onClick={reproducirAudio}
-        >
+        <button className="letras-boton letras-boton-escuchar" onClick={reproducirAudio}>
           Escuchar sonido
         </button>
-        <button
-          className="letras-boton letras-boton-pronunciar"
-          onClick={verificarPronunciacion}
-        >
+        <button className="letras-boton letras-boton-pronunciar" onClick={verificarPronunciacion}>
           Pronunciar
         </button>
         <button

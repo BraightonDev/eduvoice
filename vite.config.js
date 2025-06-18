@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     host: true,             // 🔓 permite conexiones externas (necesario para Live Share)
-    port: 5173,             // puedes dejarlo así o cambiarlo si ya está en uso
+    port: 3305,             // puedes dejarlo así o cambiarlo si ya está en uso
     allowedHosts: 'all'     // 🔓 permite que Live Share acceda sin bloquear el host
   }
 })
