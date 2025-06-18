@@ -10,25 +10,8 @@ function LetrasAudio() {
   const [index, setIndex] = useState(0);
   const [resultado, setResultado] = useState(null);
   const [cargando, setCargando] = useState(true); // Nuevo estado
-  const [progreso, setProgreso] = useState(0);
 
   useEffect(() => {
-  let intervalo;
-
-  setCargando(true); // activa el estado de carga
-  setProgreso(0);
-
-  // Simular barra de progreso
-  intervalo = setInterval(() => {
-    setProgreso((prev) => {
-      if (prev >= 90) {
-        clearInterval(intervalo);
-        return prev;
-      }
-      return prev + 5;
-    });
-  }, 200);
-
   const obtenerContenidoDesdeAPI = async () => {
     try {
       let url = "";
@@ -50,20 +33,18 @@ function LetrasAudio() {
 
       const datos = await respuesta.json();
       setContenido(datos);
-      setProgreso(100); // al llegar la respuesta, poner al 100%
+
+      // 🔄 Cambio: sin delay artificial
+      setCargando(false);
     } catch (error) {
       console.error("Error al obtener datos desde API:", error);
       navigate("/pagina0");
-    } finally {
-      clearInterval(intervalo);
-      setTimeout(() => setCargando(false), 2000); // en lugar de 500 ms
     }
   };
 
   obtenerContenidoDesdeAPI();
-
-  return () => clearInterval(intervalo); // limpiar si el componente se desmonta
 }, [categoria, tema, navigate]);
+
 
   const volverAtras = () => navigate(`/pagina2/${tipo}/${categoria}`);
 
@@ -113,19 +94,13 @@ function LetrasAudio() {
   };
 
   // 🌀 Mostrar animación de carga
-if (cargando || !contenido.length) {
+ if (cargando || !contenido.length) {
   return (
     <div className="letras-container letras-cargando">
-      <p>Cargando {tema}...</p>
-
       <div className="barra-progreso">
-        <div
-          className="barra-progreso-inner"
-          style={{ width: `${progreso}%` }}
-        ></div>
+        <div className="barra-progreso-inner"></div>
       </div>
-
-      <p>{progreso}%</p>
+      <p>Cargando contenido, por favor espera...</p>
     </div>
   );
 }
