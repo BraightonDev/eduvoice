@@ -41,7 +41,7 @@ const Pagina1 = () => {
       <div className="opciones-pagina1">
         <div className="cuadro-pagina1" onClick={() => irACategoria("niño")}>
           <img
-            src="/src/paginas/pagina1/iconos1/niños.png"
+            src="/public/iconos/iconos1/niños.png"
             alt="Niños"
             className="icono-pagina1"
           />
@@ -57,7 +57,7 @@ const Pagina1 = () => {
 
         <div className="cuadro-pagina1" onClick={() => irACategoria("adulto")}>
           <img
-            src="/src/paginas/pagina1/iconos1/adultos.png"
+            src="/public/iconos/iconos1/adultos.png"
             alt="Adultos"
             className="icono-pagina1"
           />
