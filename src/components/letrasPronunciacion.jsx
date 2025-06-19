@@ -13,47 +13,60 @@ function LetrasAudio() {
   const [porcentajeCarga, setPorcentajeCarga] = useState(0);
 
   useEffect(() => {
-    const obtenerContenidoDesdeAPI = async () => {
-      try {
-        let url = "";
-        if (tema === "palabras") {
-          url = `https://eduvoice-backend.onrender.com/api/palabras/lista-aleatoria?categoria=${categoria}`;
-        } else if (tema === "letras") {
-          url = `https://eduvoice-backend.onrender.com/api/letras/lista-aleatoria`;
-        } else if (tema === "numeros") {
-          url = `https://eduvoice-backend.onrender.com/api/numeros/lista-aleatoria`;
-        } else if (tema === "frases") {
-          url = `https://eduvoice-backend.onrender.com/api/frases/lista-aleatoria?categoria=${categoria}`;
-        } else {
-          throw new Error("Tema no válido");
-        }
-
-        const respuesta = await fetch(url);
-        if (!respuesta.ok) throw new Error("Error en la respuesta del servidor");
-
-        const datos = await respuesta.json();
-        setContenido(datos);
-
-        let progreso = 0;
-        const intervalo = setInterval(() => {
-          progreso += 10;
-          setPorcentajeCarga(Math.min(progreso, 100));
-          if (progreso >= 100) {
-            clearInterval(intervalo);
-            setTimeout(() => {
-              setCargando(false);
-            }, 100); // un pequeño retraso para asegurar el render
-          }
-        }, 100); // 100ms * 10 = 1 segundo total
-
-      } catch (error) {
-        console.error("Error al obtener datos:", error);
-        navigate("/pagina0");
+  const obtenerContenidoDesdeAPI = async () => {
+    try {
+      let url = "";
+      if (tema === "palabras") {
+        url = `https://eduvoice-backend.onrender.com/api/palabras/lista-aleatoria?categoria=${categoria}`;
+      } else if (tema === "letras") {
+        url = `https://eduvoice-backend.onrender.com/api/letras/lista-aleatoria`;
+      } else if (tema === "numeros") {
+        url = `https://eduvoice-backend.onrender.com/api/numeros/lista-aleatoria`;
+      } else if (tema === "frases") {
+        url = `https://eduvoice-backend.onrender.com/api/frases/lista-aleatoria?categoria=${categoria}`;
+      } else {
+        throw new Error("Tema no válido");
       }
-    };
 
-    obtenerContenidoDesdeAPI();
-  }, [categoria, tema, navigate]);
+      const respuesta = await fetch(url);
+      if (!respuesta.ok) throw new Error("Error en la respuesta del servidor");
+
+      const datos = await respuesta.json();
+      setContenido(datos);
+
+      let progreso = 0;
+      const intervalo = setInterval(() => {
+        progreso += 10;
+        setPorcentajeCarga(Math.min(progreso, 100));
+        if (progreso >= 100) {
+          clearInterval(intervalo);
+          setTimeout(() => {
+            setCargando(false);
+          }, 100);
+        }
+      }, 100);
+
+    } catch (error) {
+      console.error("Error al obtener datos:", error);
+      navigate("/pagina0");
+    }
+  };
+
+  obtenerContenidoDesdeAPI();
+
+  // ⏱️ Intervalo para mantener la API activa
+  const mantenerActiva = setInterval(() => {
+    fetch("https://eduvoice-backend.onrender.com/") // o una ruta válida como /api/ping si tienes una
+      .then(() => console.log("🔄 API mantenida activa"))
+      .catch((err) => console.warn("⚠️ Error al mantener API activa:", err));
+  }, 240000); // cada 4 minutos
+
+  // Limpieza al desmontar
+  return () => {
+    clearInterval(mantenerActiva);
+  };
+}, [categoria, tema, navigate]);
+
 
   const volverAtras = () => navigate(`/pagina2/${tipo}/${categoria}`);
 
