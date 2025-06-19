@@ -36,12 +36,16 @@ function LetrasAudio() {
 
         let progreso = 0;
         const intervalo = setInterval(() => {
-          progreso += 5;
-          setPorcentajeCarga(progreso);
-          if (progreso >= 100) clearInterval(intervalo);
-        }, 100);
+          progreso += 10;
+          setPorcentajeCarga(Math.min(progreso, 100));
+          if (progreso >= 100) {
+            clearInterval(intervalo);
+            setTimeout(() => {
+              setCargando(false);
+            }, 100); // un pequeño retraso para asegurar el render
+          }
+        }, 100); // 100ms * 10 = 1 segundo total
 
-        setTimeout(() => setCargando(false), 2000);
       } catch (error) {
         console.error("Error al obtener datos:", error);
         navigate("/pagina0");
@@ -87,29 +91,56 @@ function LetrasAudio() {
     });
   };
 
+  const capitalizarPrimeraLetra = (str) => {
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
+  const obtenerRutaArchivo = (tipoArchivo) => {
+    const valor = contenido[index]?.valor;
+    const texto = contenido[index]?.texto;
+
+    if (!valor) return "";
+
+    if (tipoArchivo === "imagen") {
+      if (tema === "letras") return `/imagenes/letras/${valor.toUpperCase()}.png`;
+      if (tema === "numeros") return `/imagenes/numeros/${valor}.png`;
+    }
+
+    if (tipoArchivo === "audio") {
+      if (tema === "letras") return `/audios/letras/${valor.toUpperCase()}.mp3`;
+      if (tema === "numeros") {
+        const textoCapitalizado = capitalizarPrimeraLetra(texto);
+        return `/audios/numeros/${valor}. ${textoCapitalizado}.mp3`;
+      }
+    }
+
+    return "";
+  };
+
   const reproducirAudio = () => {
-    const audioUrl = contenido[index]?.audio;
+    const audioUrl = obtenerRutaArchivo("audio");
     if (audioUrl) {
       const audio = new Audio(audioUrl);
       audio.play().catch((e) => console.warn("Error al reproducir:", e.message));
     }
+    console.log("Ruta de audio:", audioUrl);
   };
 
   if (cargando || !contenido.length) {
-  return (
-    <div className="letras-container letras-cargando">
-      <div className="barra-progreso">
-        <div
-          className="barra-progreso-inner"
-          style={{ width: `${porcentajeCarga}%` }}
-        ></div>
+    return (
+      <div className="letras-container letras-cargando">
+        <div className="barra-progreso">
+          <div
+            className="barra-progreso-inner"
+            style={{ width: `${porcentajeCarga}%` }}
+          ></div>
+        </div>
+        <p>Cargando contenido, por favor espera...</p>
+        <p className="porcentaje-carga">{porcentajeCarga}%</p>
       </div>
-      <p>Cargando contenido, por favor espera...</p>
-      <p className="porcentaje-carga">{porcentajeCarga}%</p>
-    </div>
-  );
-}
-
+    );
+  }
 
   const itemActual = contenido[index];
 
@@ -119,7 +150,7 @@ function LetrasAudio() {
 
     if (tema === "letras") return `Di: letra ${valor}`;
     if (tema === "palabras") return `Di: ${valor}`;
-    if (tema === "numeros") return `Di: ${valor} (${texto})`;
+    if (tema === "numeros") return `Di: número ${valor} (${texto})`;
 
     return `Di: ${valor}`;
   };
@@ -134,12 +165,11 @@ function LetrasAudio() {
       <h2 className="letras-titulo">Categoría: {categoria}</h2>
 
       <div className="letras-cuadro">
-        {itemActual.imagen ? (
-          <img src={itemActual.imagen} alt={itemActual.valor} />
-        ) : (
-          <p>(Sin imagen)</p>
-        )}
-        {/* Mostrar número y texto si es número */}
+        <img
+          src={obtenerRutaArchivo("imagen")}
+          alt={itemActual.valor}
+          onError={(e) => (e.target.style.display = "none")}
+        />
         {tema === "numeros" && (
           <p style={{ fontSize: "1.5rem", marginTop: "0.5rem" }}>
             {itemActual.valor} - {itemActual.texto}
