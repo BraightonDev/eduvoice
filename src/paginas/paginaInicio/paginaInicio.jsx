@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "./paginaInicio.css"; 
+import "./PaginaInicio.css"; 
 
 const PaginaInicio = () => {
   const navigate = useNavigate();
