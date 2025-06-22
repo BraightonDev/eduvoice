@@ -11,17 +11,40 @@ const Pagina0 = () => {
   const [escuchando, setEscuchando] = useState(false);
   const navigate = useNavigate();
 
+  const reproducirIndicacion = () => {
+    if (window.audio && !window.audio.paused) {
+      window.audio.pause();
+      window.audio.currentTime = 0;
+    }
+    window.audio = new Audio("/audios/indicaciones/indicacion 1.mp3");
+    window.audio.play().catch((e) =>
+      console.warn("Error al reproducir audio:", e)
+    );
+  };
+
   const manejarMicrofono = () => {
+    if (window.audio && !window.audio.paused) {
+      window.audio.pause();
+      window.audio.currentTime = 0;
+      window.audio = null;
+    }
     if (escuchando) {
       detenerReconocimientoVoz();
     } else {
-      iniciarReconocimientoVoz(navigate); // ✅ Pasa navigate a la lógica de voz
+      iniciarReconocimientoVoz(navigate);
     }
     setEscuchando(!escuchando);
   };
 
-  const irAPaginaPronunciacion = () => navigate("/pagina1/pronunciacion");
-  const irAPaginaEscritura = () => navigate("/pagina1/escritura");
+  const irAPaginaPronunciacion = () => {
+    reproducirIndicacion();
+    navigate("/pagina1/pronunciacion");
+  };
+
+  const irAPaginaEscritura = () => {
+    reproducirIndicacion();
+    navigate("/pagina1/escritura");
+  };
 
   return (
     <div className="contenedor-pagina0">

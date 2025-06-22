@@ -2,7 +2,19 @@ let reconocimiento;
 let escuchando = false;
 
 export const iniciarPronunciacion = (formasEsperadas, tema, callback) => {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  // Detener cualquier audio que esté sonando
+  if (window.audio && !window.audio.paused) {
+    try {
+      window.audio.pause();
+      window.audio.currentTime = 0;
+      window.audio = null;
+    } catch (e) {
+      console.warn("No se pudo detener audio previo en pronunciación:", e);
+    }
+  }
+
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
   reconocimiento = new SpeechRecognition();
   reconocimiento.lang = "es-ES";
   reconocimiento.continuous = false;
@@ -70,9 +82,8 @@ export const detenerReconocimientoVoz = () => {
 
 const limpiarTexto = (texto) => {
   return texto
-    .replace(/^(la|el|letra|número|numero|el número|la letra)\s*/gi, "") 
-    .replace(/[.,¡!¿?]/g, "")  
-    .replace(/\s+/g, "")       
-    .toLowerCase();            
+    .replace(/^(la|el|letra|número|numero|el número|la letra)\s*/gi, "")
+    .replace(/[.,¡!¿?]/g, "")
+    .replace(/\s+/g, "")
+    .toLowerCase();
 };
-

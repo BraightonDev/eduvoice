@@ -12,7 +12,7 @@ const PaginaLogo = () => {
     }, 2000); // Comienza a desvanecer después de 2 segundos
 
     const redirectTimer = setTimeout(() => {
-      navigate("/pagina0"); // Redirige después de 3 segundos
+      navigate("/inicio"); // Redirige después de 3 segundos
     }, 3000);
 
     return () => {

@@ -1,6 +1,7 @@
+// src/paginas/logica1/pagina1.js
 let reconocimiento;
 let escuchando = false;
-let navegarA = null; // Función que maneja la navegación
+let navegarA = null;
 
 if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
   const SpeechRecognition =
@@ -14,6 +15,18 @@ if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
     console.log("🎤 Texto detectado:", texto);
 
     if (navegarA) {
+      // Detenemos cualquier audio en reproducción
+      if (window.audio && !window.audio.paused) {
+        window.audio.pause();
+        window.audio.currentTime = 0;
+      }
+
+      // Reproduce el audio "indicacion 2.mp3"
+      window.audio = new Audio("/audios/indicaciones/indicacion 2.mp3");
+      window.audio.play().catch((e) =>
+        console.warn("No se pudo reproducir audio:", e)
+      );
+
       navegarA(texto);
     }
   };
@@ -27,7 +40,6 @@ export function iniciarReconocimientoVoz(navigate, tipo) {
   if (reconocimiento && !escuchando) {
     escuchando = true;
 
-    // Define cómo navegar según el texto detectado y el tipo actual
     navegarA = (texto) => {
       if (texto.includes("niño")) {
         navigate(`/pagina2/${tipo}/niño`);

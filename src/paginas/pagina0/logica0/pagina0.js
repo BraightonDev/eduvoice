@@ -1,5 +1,4 @@
 // src/paginas/logica0/pagina0.js
-
 let reconocimiento;
 let escuchando = false;
 let navegarA = null;
@@ -16,6 +15,18 @@ if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
     console.log("Texto detectado:", texto);
 
     if (navegarA) {
+      // Detenemos audio actual
+      if (window.audio && !window.audio.paused) {
+        window.audio.pause();
+        window.audio.currentTime = 0;
+      }
+
+      // Reproducción del audio "indicacion 1.mp3"
+      window.audio = new Audio("/audios/indicaciones/indicacion 1.mp3");
+      window.audio.play().catch((e) =>
+        console.warn("No se pudo reproducir audio:", e)
+      );
+
       if (texto.includes("pronunciación")) {
         navegarA("/pagina1/pronunciacion");
       } else if (texto.includes("escritura")) {

@@ -13,21 +13,41 @@ const Pagina1 = () => {
   const navigate = useNavigate();
 
   const manejarMicrofono = () => {
+    if (window.audio && !window.audio.paused) {
+      window.audio.pause();
+      window.audio.currentTime = 0;
+      window.audio = null;
+    }
+
     if (escuchando) {
       detenerReconocimientoVoz();
     } else {
-      iniciarReconocimientoVoz(navigate, tipo); // ✅ Se pasa 'tipo' para construir la ruta correctamente
+      iniciarReconocimientoVoz(navigate, tipo);
     }
+
     setEscuchando(!escuchando);
   };
 
+  const reproducirIndicacion = () => {
+    if (window.audio && !window.audio.paused) {
+      window.audio.pause();
+      window.audio.currentTime = 0;
+    }
+    window.audio = new Audio("/audios/indicaciones/indicacion 2.mp3");
+    window.audio.play().catch((e) =>
+      console.warn("Error al reproducir audio:", e)
+    );
+  };
+
   const irACategoria = (categoria) => {
-    navigate(`/pagina2/${tipo}/${categoria}`); // Ej: /pagina2/pronunciacion/niño
+    reproducirIndicacion();
+    navigate(`/pagina2/${tipo}/${categoria}`);
   };
 
   const volverAtras = () => navigate("/pagina0");
 
-  const titulo = tipo === "escritura" ? "mejorar escritura" : "mejorar pronunciación";
+  const titulo =
+    tipo === "escritura" ? "mejorar escritura" : "mejorar pronunciación";
 
   return (
     <div className="contenedor-pagina1">
