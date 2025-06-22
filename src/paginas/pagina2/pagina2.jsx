@@ -42,9 +42,9 @@ const Pagina2 = () => {
             <img src="/iconos/Letras.png" alt="Letras" />
             <p>Letras</p>
           </div>
-          <div className="categoria-pagina2" onClick={() => irALectura('colores')}>
-            <img src="/iconos/Color.png" alt="Color" />
-            <p>Colores</p>
+          <div className="categoria-pagina2" onClick={() => irALectura('frases')}>
+            <img src="/iconos/frases.png" alt="Frases" />
+            <p>Frases</p>
           </div>
         </div>
 
