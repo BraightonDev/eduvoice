@@ -200,7 +200,12 @@ function LetrasAudio() {
         return `/audios/numeros/${valor}. ${capitalizarPrimeraLetra(
           texto
         )}.mp3`;
-      if (tema === "palabras") return `/audios/palabras/${categoria}/${valor}.mp3`;
+      if (tema === "palabras")
+        return `/audios/palabras/${categoria}/${valor}.mp3`;
+      if (tema === "frases") {
+        const valorLimpio = valor.replace(/[¿?]/g, "");
+        return `/audios/frases/${categoria}/${valorLimpio}.mp3`;
+      }
     }
     return "";
   };
