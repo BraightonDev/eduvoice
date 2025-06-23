@@ -26,23 +26,23 @@ function LetrasAudio() {
       }
     }
 
-    const audioMap = {
-      pronunciacion: {
-        letras: "indicacion letra1.mp3",
-        numeros: "indicacion numero1.mp3",
-        frases: "indicacion frase1.mp3",
-        palabras: "indicacion palabra1.mp3",
-      },
-      escritura: {
-        letras: "indicacion letra2.mp3",
-        numeros: "indicacion numero2.mp3",
-        frases: "indicacion frase2.mp3",
-        palabras: "indicacion palabra2.mp3",
-      },
-    };
+    let audioRuta = null;
 
-    const audioNombre = audioMap[tipo]?.[tema];
-    const audioRuta = audioNombre ? `/audios/indicaciones/${audioNombre}` : null;
+    if (tipo === "escritura") {
+      audioRuta = "/audios/indicaciones/indicacion escribir.mp3";
+    } else {
+      const audioMap = {
+        pronunciacion: {
+          letras: "indicacion letra1.mp3",
+          numeros: "indicacion numero1.mp3",
+          frases: "indicacion frase1.mp3",
+          palabras: "indicacion palabra1.mp3",
+        },
+      };
+
+      const audioNombre = audioMap[tipo]?.[tema];
+      audioRuta = audioNombre ? `/audios/indicaciones/${audioNombre}` : null;
+    }
 
     if (audioRuta) {
       timeoutId = setTimeout(() => {
@@ -73,7 +73,13 @@ function LetrasAudio() {
         if (!respuesta.ok)
           throw new Error("Error en la respuesta del servidor");
 
-        const datos = await respuesta.json();
+        let datos = await respuesta.json();
+
+        // Filtrar números hasta 20 si es el tema
+        if (tema === "numeros") {
+          datos = datos.filter((item) => item.valor <= 20);
+        }
+
         setContenido(datos);
 
         let progreso = 0;
@@ -102,7 +108,7 @@ function LetrasAudio() {
     }, 240000);
 
     return () => {
-      clearTimeout(timeoutId); // Limpia el audio inicial pendiente
+      clearTimeout(timeoutId);
       clearInterval(mantenerActiva);
 
       if (window.audio && !window.audio.paused) {
@@ -152,39 +158,21 @@ function LetrasAudio() {
     if (tipo === "pronunciacion") {
       let formasEsperadas = [valorEsperado];
       if (tema === "numeros") {
-        const mapaNumeros = {
-          0: "cero", 1: "uno", 2: "dos", 3: "tres", 4: "cuatro",
-          5: "cinco", 6: "seis", 7: "siete", 8: "ocho", 9: "nueve",
-          10: "diez", 11: "once", 12: "doce", 13: "trece", 14: "catorce",
-          15: "quince", 16: "dieciséis", 17: "diecisiete", 18: "dieciocho", 19: "diecinueve", 20: "veinte",
-        };
-        const formaTexto = mapaNumeros[valorEsperado];
-        const formaNumero = Object.keys(mapaNumeros).find(
-          (num) => mapaNumeros[num] === valorEsperado
-        );
-        if (formaTexto) formasEsperadas.push(formaTexto);
-        if (formaNumero) formasEsperadas.push(formaNumero);
+        const formaTexto = itemActual.texto.toLowerCase();
+        formasEsperadas.push(formaTexto);
       }
       iniciarPronunciacion(formasEsperadas, tema, setResultado);
     } else {
       if (tema === "numeros") {
-        const mapaNumeros = {
-          0: "cero", 1: "uno", 2: "dos", 3: "tres", 4: "cuatro",
-          5: "cinco", 6: "seis", 7: "siete", 8: "ocho", 9: "nueve",
-          10: "diez", 11: "once", 12: "doce", 13: "trece", 14: "catorce",
-          15: "quince", 16: "dieciséis", 17: "diecisiete", 18: "dieciocho", 19: "diecinueve", 20: "veinte",
-        };
-        const valor = Number(itemActual.valor);
-        const formaTexto = mapaNumeros[valor];
-        const posiblesFormas = [
-          String(valor),
-          formaTexto,
-          formaTexto?.toLowerCase(),
-          formaTexto?.toUpperCase(),
-          capitalizarPrimeraLetra(formaTexto),
+        const formasValidas = [
+          itemActual.texto.toLowerCase(),
+          itemActual.texto.toUpperCase(),
+          capitalizarPrimeraLetra(itemActual.texto),
         ];
         setResultado(
-          posiblesFormas.includes(entradaUsuario.trim()) ? "correcta" : "incorrecta"
+          formasValidas.includes(entradaUsuario.trim())
+            ? "correcta"
+            : "incorrecta"
         );
       } else {
         setResultado(
@@ -202,13 +190,17 @@ function LetrasAudio() {
     const texto = contenido[index]?.texto;
     if (!valor) return "";
     if (tipoArchivo === "imagen") {
-      if (tema === "letras") return `/imagenes/letras/${valor.toUpperCase()}.png`;
+      if (tema === "letras")
+        return `/imagenes/letras/${valor.toUpperCase()}.png`;
       if (tema === "numeros") return `/imagenes/numeros/${valor}.png`;
     }
     if (tipoArchivo === "audio") {
       if (tema === "letras") return `/audios/letras/${valor.toUpperCase()}.mp3`;
       if (tema === "numeros")
-        return `/audios/numeros/${valor}. ${capitalizarPrimeraLetra(texto)}.mp3`;
+        return `/audios/numeros/${valor}. ${capitalizarPrimeraLetra(
+          texto
+        )}.mp3`;
+      if (tema === "palabras") return `/audios/palabras/${categoria}/${valor}.mp3`;
     }
     return "";
   };
@@ -219,9 +211,9 @@ function LetrasAudio() {
     if (audioUrl) {
       const audio = new Audio(audioUrl);
       window.audio = audio;
-      audio.play().catch((e) =>
-        console.warn("Error al reproducir:", e.message)
-      );
+      audio
+        .play()
+        .catch((e) => console.warn("Error al reproducir:", e.message));
     }
   };
 
@@ -245,11 +237,19 @@ function LetrasAudio() {
   const obtenerInstruccion = () => {
     const valor = itemActual.valor;
     const texto = itemActual.texto;
-    if (tipo === "escritura") return `Ingresa la ${tema}`;
-    if (tema === "letras") return `Di: letra ${valor}`;
-    if (tema === "palabras") return `Di: ${valor}`;
-    if (tema === "numeros") return `Di: número ${valor} (${texto})`;
-    return `Di: ${valor}`;
+    if (tipo === "escritura") {
+      if (tema === "numeros") return `Ingresa el número escrito`;
+      if (tema === "palabras") return `Ingresa la palabra`;
+      if (tema === "letras") return `Ingresa la letra`;
+      if (tema === "frases") return `Ingresa la frase`;
+    }
+
+    if (tipo === "pronunciacion") {
+      if (tema === "letras") return `Di: letra ${valor}`;
+      if (tema === "palabras") return `Di: ${valor}`;
+      if (tema === "numeros") return `Di: número ${valor} (${texto})`;
+      if (tema === "frases") return `Di: ${valor}`;
+    }
   };
 
   return (
@@ -285,6 +285,7 @@ function LetrasAudio() {
           value={entradaUsuario}
           onChange={(e) => setEntradaUsuario(e.target.value)}
           placeholder={`Escribe la ${tema}`}
+          style={{ marginTop: "1.5rem" }}
         />
       )}
 
