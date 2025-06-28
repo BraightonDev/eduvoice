@@ -69,7 +69,7 @@ const Pagina1 = () => {
 
         <div className="microfono-pagina1" onClick={manejarMicrofono}>
           <img
-            src="./microfono.png"
+            src="https://i.ibb.co/Lzj5pk7n/microfono.png"
             alt="Micrófono"
           />
         </div>
