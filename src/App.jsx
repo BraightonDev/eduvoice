@@ -6,6 +6,7 @@ import Pagina0 from './paginas/pagina0/pagina0';
 import Pagina1 from './paginas/pagina1/pagina1';
 import Pagina2 from './paginas/pagina2/pagina2';
 import LetrasAudio from './components/letrasPronunciacion.jsx';
+import Resultados from './paginas/pagina-resultados/Resultados.jsx';
 import './App.css';
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
         <Route path="/pagina2/:tipo/:categoria" element={<Pagina2 />} />
         <Route path="/pagina3" element={<div>Página 3</div>} />
         <Route path="/contenido/:tipo/:categoria/:tema" element={<LetrasAudio />} />
+        <Route path="/resultados" element={<Resultados />} />
       </Routes>
     </Router>
   );

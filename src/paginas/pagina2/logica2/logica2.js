@@ -21,7 +21,7 @@ if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
       let tema = null;
 
       if (texto.includes("letra")) tema = "letras";
-      else if (texto.includes("color")) tema = "colores";
+      else if (texto.includes("frase")) tema = "frases";
       else if (texto.includes("número") || texto.includes("numero")) tema = "numeros";
       else if (texto.includes("palabra")) tema = "palabras";
 

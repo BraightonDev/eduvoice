@@ -57,12 +57,12 @@ const Pagina0 = () => {
             alt="Pronunciación"
             className="icono-pagina0"
           />
-          <p className="texto-pagina0">Mejorar tu pronunciación</p>
+          <p className="texto-pagina0">Pronunciación</p>
         </div>
 
         <div className="microfono-pagina0" onClick={manejarMicrofono}>
           <img
-            src="https://cdn-icons-png.freepik.com/512/4903/4903738.png"
+            src="./iconos/microfono.png"
             alt="Micrófono"
           />
         </div>
@@ -73,7 +73,7 @@ const Pagina0 = () => {
             alt="Escritura"
             className="icono-pagina0"
           />
-          <p className="texto-pagina0">Mejorar tu escritura</p>
+          <p className="texto-pagina0">Escritura</p>
         </div>
       </div>
     </div>

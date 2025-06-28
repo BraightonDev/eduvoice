@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { iniciarPronunciacion } from "./logicaPronunciacion";
+import GrabarPronunciacion from "../components/GrabarPronunciacion";
 import "./letrasPronunciacion.css";
 
 function LetrasAudio() {
@@ -9,6 +9,7 @@ function LetrasAudio() {
   const [contenido, setContenido] = useState([]);
   const [index, setIndex] = useState(0);
   const [resultado, setResultado] = useState(null);
+  const [resultadosTotales, setResultadosTotales] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [porcentajeCarga, setPorcentajeCarga] = useState(0);
   const [entradaUsuario, setEntradaUsuario] = useState("");
@@ -75,7 +76,6 @@ function LetrasAudio() {
 
         let datos = await respuesta.json();
 
-        // Filtrar números hasta 20 si es el tema
         if (tema === "numeros") {
           datos = datos.filter((item) => item.valor <= 20);
         }
@@ -110,32 +110,12 @@ function LetrasAudio() {
     return () => {
       clearTimeout(timeoutId);
       clearInterval(mantenerActiva);
-
-      if (window.audio && !window.audio.paused) {
-        try {
-          window.audio.pause();
-          window.audio.currentTime = 0;
-          window.audio = null;
-        } catch (e) {
-          console.warn("No se pudo detener el audio al desmontar:", e);
-        }
-      }
+      detenerAudio();
     };
   }, [categoria, tema, tipo, navigate]);
 
-  const volverAtras = () => {
-    detenerAudio();
-    navigate(`/pagina2/${tipo}/${categoria}`);
-  };
-
-  const siguiente = () => {
-    detenerAudio();
-    if (index < contenido.length - 1) {
-      setIndex(index + 1);
-      setResultado(null);
-      setEntradaUsuario("");
-    }
-  };
+  const capitalizarPrimeraLetra = (str) =>
+    !str ? "" : str.charAt(0).toUpperCase() + str.slice(1);
 
   const detenerAudio = () => {
     if (window.audio && !window.audio.paused) {
@@ -149,41 +129,81 @@ function LetrasAudio() {
     }
   };
 
-  const verificar = () => {
-    detenerAudio();
-    const itemActual = contenido[index];
-    const valorEsperado = String(itemActual.valor).toLowerCase();
-    const entradaNormalizada = entradaUsuario.trim().toLowerCase();
+  const manejarTranscripcion = (textoTranscrito) => {
+  const itemActual = contenido[index];
+  const valorEsperado = String(itemActual.valor).toLowerCase().trim();
 
-    if (tipo === "pronunciacion") {
-      let formasEsperadas = [valorEsperado];
-      if (tema === "numeros") {
-        const formaTexto = itemActual.texto.toLowerCase();
-        formasEsperadas.push(formaTexto);
-      }
-      iniciarPronunciacion(formasEsperadas, tema, setResultado);
+  // Normalizar texto transcrito
+  const transcrito = textoTranscrito.toLowerCase().replace(/[^\wáéíóúüñ]+/g, " ").trim();
+
+  // Verificar si contiene la letra esperada o variantes comunes
+  const contieneExacto = transcrito === valorEsperado;
+  const contienePalabra = transcrito.includes(valorEsperado);
+  const contieneConPrefijo = transcrito.includes("letra " + valorEsperado);
+  const contieneSeparado = transcrito.replace(/\s+/g, "") === valorEsperado;
+
+  const esCorrecto = contieneExacto || contienePalabra || contieneConPrefijo || contieneSeparado;
+
+  setResultado(esCorrecto ? "correcta" : "incorrecta");
+
+  const nuevoResultado = {
+    item: itemActual,
+    correcto: esCorrecto,
+    pronunciado: textoTranscrito,
+  };
+
+  setResultadosTotales((prev) => [...prev, nuevoResultado]);
+};
+
+
+    const verificar = () => {
+    const itemActual = contenido[index];
+    const valorEsperado = String(itemActual.valor).toLowerCase().trim();
+    const entrada = entradaUsuario.toLowerCase().trim();
+
+    const esCorrecto = entrada === valorEsperado;
+    setResultado(esCorrecto ? "correcta" : "incorrecta");
+
+    const nuevoResultado = {
+      item: itemActual,
+      correcto: esCorrecto,
+      pronunciado: entrada || "No ingresó texto",
+    };
+
+    setResultadosTotales((prev) => [...prev, nuevoResultado]);
+  };
+
+
+  const siguiente = () => {
+    detenerAudio();
+    if (index < contenido.length - 1) {
+      setIndex(index + 1);
+      setResultado(null);
+      setEntradaUsuario("");
     } else {
-      if (tema === "numeros") {
-        const formasValidas = [
-          itemActual.texto.toLowerCase(),
-          itemActual.texto.toUpperCase(),
-          capitalizarPrimeraLetra(itemActual.texto),
-        ];
-        setResultado(
-          formasValidas.includes(entradaUsuario.trim())
-            ? "correcta"
-            : "incorrecta"
-        );
-      } else {
-        setResultado(
-          entradaNormalizada === valorEsperado ? "correcta" : "incorrecta"
-        );
-      }
+      const resultadosCompletos = contenido.map(
+        (item, i) =>
+          resultadosTotales[i] || {
+            item,
+            correcto: false,
+            pronunciado: "No pronunció",
+          }
+      );
+      navigate("/resultados", {
+        state: {
+          resultados: resultadosCompletos,
+          tipo,
+          categoria,
+          tema,
+        },
+      });
     }
   };
 
-  const capitalizarPrimeraLetra = (str) =>
-    !str ? "" : str.charAt(0).toUpperCase() + str.slice(1);
+  const volverAtras = () => {
+    detenerAudio();
+    navigate(`/pagina2/${tipo}/${categoria}`);
+  };
 
   const obtenerRutaArchivo = (tipoArchivo) => {
     const valor = contenido[index]?.valor;
@@ -303,16 +323,19 @@ function LetrasAudio() {
         >
           Escuchar sonido
         </button>
-        <button
-          className="letras-boton letras-boton-pronunciar"
-          onClick={verificar}
-        >
-          {tipo === "escritura" ? "Validar" : "Pronunciar"}
-        </button>
+        {tipo === "pronunciacion" ? (
+          <GrabarPronunciacion onResultado={manejarTranscripcion} />
+        ) : (
+          <button
+            className="letras-boton letras-boton-pronunciar"
+            onClick={verificar}
+          >
+            Validar
+          </button>
+        )}
         <button
           className="letras-boton letras-boton-siguiente"
           onClick={siguiente}
-          disabled={index >= contenido.length - 1}
         >
           Siguiente
         </button>

@@ -30,39 +30,31 @@ export const iniciarPronunciacion = (formasEsperadas, tema, callback) => {
     escuchando = false;
     const resultadoCrudo = event.results[0][0].transcript.toLowerCase().trim();
     const normalizado = limpiarTexto(resultadoCrudo);
-    // Sustituir esto
     const formasNormalizadas = formasEsperadas.map((f) => limpiarTexto(f));
 
-    // Por esto (garantiza que uses el array limpio en la comparación)
-    formasEsperadas = formasEsperadas.map((f) => limpiarTexto(f));
-    if (formasEsperadas.includes(normalizado)) {
-      console.log("✅ Pronunciación correcta");
-      callback("correcta");
-    } else {
-      console.log("❌ Pronunciación incorrecta");
-      callback("incorrecta");
-    }
+    const esCorrecto = formasNormalizadas.includes(normalizado);
 
-    console.log("🔊 Texto reconocido por el micrófono:", resultadoCrudo);
+    console.log("🔊 Texto reconocido:", resultadoCrudo);
     console.log("🧼 Texto normalizado:", normalizado);
     console.log("📌 Formas esperadas (normalizadas):", formasNormalizadas);
+    console.log(esCorrecto ? "✅ Pronunciación correcta" : "❌ Pronunciación incorrecta");
 
-    if (formasNormalizadas.includes(normalizado)) {
-      console.log("✅ Pronunciación correcta");
-      callback("correcta");
-    } else {
-      console.log("❌ Pronunciación incorrecta");
-      callback("incorrecta");
-    }
+    callback({
+      resultado: esCorrecto ? "correcta" : "incorrecta",
+      pronunciado: resultadoCrudo || "No detectado",
+    });
   };
 
   reconocimiento.onerror = (event) => {
     console.error("❌ Error en reconocimiento:", event.error);
     if (event.error === "aborted") {
       console.info("ℹ️ Reconocimiento abortado por el sistema o el usuario.");
-      return; // no llamamos al callback para no mostrar error innecesario
+      return;
     }
-    callback("error");
+    callback({
+      resultado: "error",
+      pronunciado: "—",
+    });
   };
 
   reconocimiento.onend = () => {
@@ -82,8 +74,11 @@ export const detenerReconocimientoVoz = () => {
 
 const limpiarTexto = (texto) => {
   return texto
-    .replace(/^(la|el|letra|número|numero|el número|la letra)\s*/gi, "")
-    .replace(/[.,¡!¿?]/g, "")
-    .replace(/\s+/g, "")
-    .toLowerCase();
+    // Elimina artículos o prefijos como "la letra", "el número", etc.
+    .replace(/^(la|el|letra|número|numero|el número|la letra)\s+/gi, "")
+    // Elimina signos de puntuación como ¿?¡!., (en cualquier lugar)
+    .replace(/[¿?¡!.,]/g, "")
+    .trim();
 };
+
+

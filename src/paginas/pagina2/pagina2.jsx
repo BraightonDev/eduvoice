@@ -79,7 +79,7 @@ const Pagina2 = () => {
 
         <div className="microfono-pagina2" onClick={manejarMicrofono}>
           <img
-            src="https://cdn-icons-png.freepik.com/512/4903/4903738.png"
+            src="/public/iconos/microfono.png"
             alt="Micrófono"
           />
         </div>
