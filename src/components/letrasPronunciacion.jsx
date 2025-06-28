@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import GrabarPronunciacion from "../components/GrabarPronunciacion";
+import { iniciarPronunciacion } from "./logicaPronunciacion.js";
 import "./letrasPronunciacion.css";
 
 function LetrasAudio() {
@@ -129,34 +129,30 @@ function LetrasAudio() {
     }
   };
 
-  const manejarTranscripcion = (textoTranscrito) => {
-  const itemActual = contenido[index];
-  const valorEsperado = String(itemActual.valor).toLowerCase().trim();
+  const iniciarReconocimiento = () => {
+    const itemActual = contenido[index];
+    const valorEsperado = String(itemActual.valor).toLowerCase().trim();
 
-  // Normalizar texto transcrito
-  const transcrito = textoTranscrito.toLowerCase().replace(/[^\wáéíóúüñ]+/g, " ").trim();
+    const formasEsperadas = [
+      valorEsperado,
+      `letra ${valorEsperado}`,
+      `número ${valorEsperado}`,
+      `el número ${valorEsperado}`,
+      `la letra ${valorEsperado}`,
+    ];
 
-  // Verificar si contiene la letra esperada o variantes comunes
-  const contieneExacto = transcrito === valorEsperado;
-  const contienePalabra = transcrito.includes(valorEsperado);
-  const contieneConPrefijo = transcrito.includes("letra " + valorEsperado);
-  const contieneSeparado = transcrito.replace(/\s+/g, "") === valorEsperado;
-
-  const esCorrecto = contieneExacto || contienePalabra || contieneConPrefijo || contieneSeparado;
-
-  setResultado(esCorrecto ? "correcta" : "incorrecta");
-
-  const nuevoResultado = {
-    item: itemActual,
-    correcto: esCorrecto,
-    pronunciado: textoTranscrito,
+    iniciarPronunciacion(formasEsperadas, tema, ({ resultado, pronunciado }) => {
+      setResultado(resultado);
+      const nuevoResultado = {
+        item: itemActual,
+        correcto: resultado === "correcta",
+        pronunciado: pronunciado || "No pronunció",
+      };
+      setResultadosTotales((prev) => [...prev, nuevoResultado]);
+    });
   };
 
-  setResultadosTotales((prev) => [...prev, nuevoResultado]);
-};
-
-
-    const verificar = () => {
+  const verificar = () => {
     const itemActual = contenido[index];
     const valorEsperado = String(itemActual.valor).toLowerCase().trim();
     const entrada = entradaUsuario.toLowerCase().trim();
@@ -172,7 +168,6 @@ function LetrasAudio() {
 
     setResultadosTotales((prev) => [...prev, nuevoResultado]);
   };
-
 
   const siguiente = () => {
     detenerAudio();
@@ -210,18 +205,13 @@ function LetrasAudio() {
     const texto = contenido[index]?.texto;
     if (!valor) return "";
     if (tipoArchivo === "imagen") {
-      if (tema === "letras")
-        return `/imagenes/letras/${valor.toUpperCase()}.png`;
+      if (tema === "letras") return `/imagenes/letras/${valor.toUpperCase()}.png`;
       if (tema === "numeros") return `/imagenes/numeros/${valor}.png`;
     }
     if (tipoArchivo === "audio") {
       if (tema === "letras") return `/audios/letras/${valor.toUpperCase()}.mp3`;
-      if (tema === "numeros")
-        return `/audios/numeros/${valor}. ${capitalizarPrimeraLetra(
-          texto
-        )}.mp3`;
-      if (tema === "palabras")
-        return `/audios/palabras/${categoria}/${valor}.mp3`;
+      if (tema === "numeros") return `/audios/numeros/${valor}. ${capitalizarPrimeraLetra(texto)}.mp3`;
+      if (tema === "palabras") return `/audios/palabras/${categoria}/${valor}.mp3`;
       if (tema === "frases") {
         const valorLimpio = valor.replace(/[¿?]/g, "");
         return `/audios/frases/${categoria}/${valorLimpio}.mp3`;
@@ -236,9 +226,7 @@ function LetrasAudio() {
     if (audioUrl) {
       const audio = new Audio(audioUrl);
       window.audio = audio;
-      audio
-        .play()
-        .catch((e) => console.warn("Error al reproducir:", e.message));
+      audio.play().catch((e) => console.warn("Error al reproducir:", e.message));
     }
   };
 
@@ -268,7 +256,6 @@ function LetrasAudio() {
       if (tema === "letras") return `Ingresa la letra`;
       if (tema === "frases") return `Ingresa la frase`;
     }
-
     if (tipo === "pronunciacion") {
       if (tema === "letras") return `Di: letra ${valor}`;
       if (tema === "palabras") return `Di: ${valor}`;
@@ -324,7 +311,12 @@ function LetrasAudio() {
           Escuchar sonido
         </button>
         {tipo === "pronunciacion" ? (
-          <GrabarPronunciacion onResultado={manejarTranscripcion} />
+          <button
+            className="letras-boton letras-boton-pronunciar"
+            onClick={iniciarReconocimiento}
+          >
+            Pronunciar
+          </button>
         ) : (
           <button
             className="letras-boton letras-boton-pronunciar"

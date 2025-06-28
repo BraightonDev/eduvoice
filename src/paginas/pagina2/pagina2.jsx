@@ -49,7 +49,6 @@ const Pagina2 = () => {
   };
 
   const volverAtras = () => navigate(`/pagina1/${tipo}`);
-
   return (
     <div className="contenedor-pagina2">
       <button className="boton-volver-pagina1" onClick={volverAtras}>

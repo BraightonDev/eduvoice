@@ -74,11 +74,8 @@ export const detenerReconocimientoVoz = () => {
 
 const limpiarTexto = (texto) => {
   return texto
-    // Elimina artículos o prefijos como "la letra", "el número", etc.
-    .replace(/^(la|el|letra|número|numero|el número|la letra)\s+/gi, "")
-    // Elimina signos de puntuación como ¿?¡!., (en cualquier lugar)
-    .replace(/[¿?¡!.,]/g, "")
-    .trim();
+    .replace(/^(la|el|letra|número|numero|el número|la letra)\s*/gi, "")
+    .replace(/[.,¡!¿?]/g, "")
+    .replace(/\s+/g, "")
+    .toLowerCase();
 };
-
-
