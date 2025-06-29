@@ -55,7 +55,6 @@ const Resultados = () => {
               </div>
             ))
           ) : (
-            // Fallback por si resultados contiene objetos simples
             <div key={palabraIndex} className="fila-resultado">
               <span>Intento 1</span>
               <span>{intentos.item?.valor || "—"}</span>
