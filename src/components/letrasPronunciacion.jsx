@@ -79,38 +79,41 @@ function LetrasAudio() {
   };
 
   const iniciarReconocimiento = () => {
-    const itemActual = contenido[index];
-    const valorEsperado = String(itemActual.valor).toLowerCase().trim();
+  detenerAudio(); // 🔊 Detiene el audio antes de iniciar el reconocimiento
 
-    const formasEsperadas = [
-      valorEsperado,
-      `letra ${valorEsperado}`,
-      `número ${valorEsperado}`,
-      `el número ${valorEsperado}`,
-      `la letra ${valorEsperado}`,
-    ];
+  const itemActual = contenido[index];
+  const valorEsperado = String(itemActual.valor).toLowerCase().trim();
 
-    iniciarPronunciacion(
-      formasEsperadas,
-      tema,
-      ({ resultado, pronunciado }) => {
-        setResultado(resultado);
-        const nuevoIntento = {
-          item: itemActual,
-          correcto: resultado === "correcta",
-          pronunciado: pronunciado || "No pronunció",
-          noPronunciado: !pronunciado,
-        };
+  const formasEsperadas = [
+    valorEsperado,
+    `letra ${valorEsperado}`,
+    `número ${valorEsperado}`,
+    `el número ${valorEsperado}`,
+    `la letra ${valorEsperado}`,
+  ];
 
-        setResultadosTotales((prev) => {
-          const copia = [...prev];
-          if (!copia[index]) copia[index] = [];
-          copia[index].push(nuevoIntento);
-          return copia;
-        });
-      }
-    );
-  };
+  iniciarPronunciacion(
+    formasEsperadas,
+    tema,
+    ({ resultado, pronunciado }) => {
+      setResultado(resultado);
+      const nuevoIntento = {
+        item: itemActual,
+        correcto: resultado === "correcta",
+        pronunciado: pronunciado || "No pronunció",
+        noPronunciado: !pronunciado,
+      };
+
+      setResultadosTotales((prev) => {
+        const copia = [...prev];
+        if (!copia[index]) copia[index] = [];
+        copia[index].push(nuevoIntento);
+        return copia;
+      });
+    }
+  );
+};
+
 
   const verificar = () => {
     const itemActual = contenido[index];
