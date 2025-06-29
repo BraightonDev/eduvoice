@@ -21,35 +21,34 @@ const Resultados = () => {
 
       <div className="tabla-resultados">
         <div className="tabla-cabecera">
+          <span>Intento</span>
           <span>Palabra</span>
           <span>Resultado</span>
-          <span>{tipo === "escritura" ? "Escritura" : "Pronunció"}</span>
+          <span>{tipo === "escritura" ? "Escribió" : "Pronunció"}</span>
         </div>
 
-        {resultados.map((grupo, i) => {
-          const intentos = Array.isArray(grupo) ? grupo : [grupo];
-          return intentos.map((res, j) => (
-            <div key={`${i}-${j}`} className="fila-resultado">
-              <span>{j === 0 ? res.item.valor : ""}</span>
-              <span
-                className={
-                  res.noPronunciado
-                    ? "no-pronunciado"
-                    : res.correcto
-                    ? "correcto"
-                    : "incorrecto"
-                }
-              >
-                {res.noPronunciado
-                  ? "No pronunciada"
+        {resultados.map((res, i) => (
+          <div key={i} className="fila-resultado">
+            <span>Intento {i + 1}</span>
+            <span>{res.item.valor}</span>
+            <span
+              className={
+                res.noPronunciado
+                  ? "no-pronunciado"
                   : res.correcto
-                  ? "Correcto"
-                  : "Incorrecta"}
-              </span>
-              <span>{res.pronunciado || "—"}</span>
-            </div>
-          ));
-        })}
+                  ? "correcto"
+                  : "incorrecto"
+              }
+            >
+              {res.noPronunciado
+                ? "No pronunciada"
+                : res.correcto
+                ? "Correcto"
+                : "Incorrecta"}
+            </span>
+            <span>{res.pronunciado || "—"}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
