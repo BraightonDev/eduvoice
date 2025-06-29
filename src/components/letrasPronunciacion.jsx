@@ -40,7 +40,6 @@ function LetrasAudio() {
           palabras: "indicacion palabra1.mp3",
         },
       };
-
       const audioNombre = audioMap[tipo]?.[tema];
       audioRuta = audioNombre ? `/audios/indicaciones/${audioNombre}` : null;
     }
@@ -49,9 +48,9 @@ function LetrasAudio() {
       timeoutId = setTimeout(() => {
         const audio = new Audio(audioRuta);
         window.audio = audio;
-        audio
-          .play()
-          .catch((e) => console.warn("Error al reproducir audio inicial:", e));
+        audio.play().catch((e) =>
+          console.warn("Error al reproducir audio inicial:", e)
+        );
       }, 2000);
     }
 
@@ -71,11 +70,9 @@ function LetrasAudio() {
         }
 
         const respuesta = await fetch(url);
-        if (!respuesta.ok)
-          throw new Error("Error en la respuesta del servidor");
+        if (!respuesta.ok) throw new Error("Error en la respuesta del servidor");
 
         let datos = await respuesta.json();
-
         if (tema === "numeros") {
           datos = datos.filter((item) => item.valor <= 20);
         }
@@ -129,6 +126,14 @@ function LetrasAudio() {
     }
   };
 
+  const actualizarResultado = (nuevoResultado, index) => {
+    setResultadosTotales((prev) => {
+      const copia = [...prev];
+      copia[index] = nuevoResultado;
+      return copia;
+    });
+  };
+
   const iniciarReconocimiento = () => {
     const itemActual = contenido[index] || { valor: `Extra ${index + 1}` };
     const valorEsperado = String(itemActual.valor).toLowerCase().trim();
@@ -141,30 +146,25 @@ function LetrasAudio() {
       `la letra ${valorEsperado}`,
     ];
 
-    iniciarPronunciacion(
-      formasEsperadas,
-      tema,
-      ({ resultado, pronunciado }) => {
-        setResultado(resultado);
+    iniciarPronunciacion(formasEsperadas, tema, ({ resultado, pronunciado }) => {
+      setResultado(resultado);
 
-        const nuevoResultado = {
-          item: itemActual,
-          correcto: resultado === "correcta",
-          pronunciado: pronunciado || "No pronunció",
-          noPronunciado: !pronunciado,
-        };
+      const nuevoResultado = {
+        item: itemActual,
+        correcto: resultado === "correcta",
+        pronunciado: pronunciado || "No pronunció",
+        noPronunciado: !pronunciado,
+      };
 
-        setResultadosTotales((prev) => [...prev, nuevoResultado]);
+      actualizarResultado(nuevoResultado, index);
 
-        // Si ya llegaste al final del contenido, agrega un nuevo item "ficticio"
-        if (index >= contenido.length - 1) {
-          setContenido((prev) => [
-            ...prev,
-            { valor: `Extra ${prev.length + 1}` },
-          ]);
-        }
+      if (index >= contenido.length - 1) {
+        setContenido((prev) => [
+          ...prev,
+          { valor: `Extra ${prev.length + 1}` },
+        ]);
       }
-    );
+    });
   };
 
   const verificar = () => {
@@ -181,7 +181,7 @@ function LetrasAudio() {
       pronunciado: entrada || "No ingresó texto",
     };
 
-    setResultadosTotales((prev) => [...prev, nuevoResultado]);
+    actualizarResultado(nuevoResultado, index);
   };
 
   const siguiente = () => {
@@ -220,16 +220,13 @@ function LetrasAudio() {
     const texto = contenido[index]?.texto;
     if (!valor) return "";
     if (tipoArchivo === "imagen") {
-      if (tema === "letras")
-        return `/imagenes/letras/${valor.toUpperCase()}.png`;
+      if (tema === "letras") return `/imagenes/letras/${valor.toUpperCase()}.png`;
       if (tema === "numeros") return `/imagenes/numeros/${valor}.png`;
     }
     if (tipoArchivo === "audio") {
       if (tema === "letras") return `/audios/letras/${valor.toUpperCase()}.mp3`;
       if (tema === "numeros")
-        return `/audios/numeros/${valor}. ${capitalizarPrimeraLetra(
-          texto
-        )}.mp3`;
+        return `/audios/numeros/${valor}. ${capitalizarPrimeraLetra(texto)}.mp3`;
       if (tema === "palabras")
         return `/audios/palabras/${categoria}/${valor}.mp3`;
       if (tema === "frases") {
@@ -246,9 +243,9 @@ function LetrasAudio() {
     if (audioUrl) {
       const audio = new Audio(audioUrl);
       window.audio = audio;
-      audio
-        .play()
-        .catch((e) => console.warn("Error al reproducir:", e.message));
+      audio.play().catch((e) =>
+        console.warn("Error al reproducir:", e.message)
+      );
     }
   };
 
