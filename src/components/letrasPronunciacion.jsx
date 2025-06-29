@@ -15,42 +15,6 @@ function LetrasAudio() {
   const [entradaUsuario, setEntradaUsuario] = useState("");
 
   useEffect(() => {
-    let timeoutId;
-
-    if (window.audio && !window.audio.paused) {
-      try {
-        window.audio.pause();
-        window.audio.currentTime = 0;
-        window.audio = null;
-      } catch (e) {
-        console.warn("No se pudo detener el audio previo:", e);
-      }
-    }
-
-    let audioRuta = null;
-    if (tipo === "escritura") {
-      audioRuta = "/audios/indicaciones/indicacion escribir.mp3";
-    } else {
-      const audioMap = {
-        pronunciacion: {
-          letras: "indicacion letra1.mp3",
-          numeros: "indicacion numero1.mp3",
-          frases: "indicacion frase1.mp3",
-          palabras: "indicacion palabra1.mp3",
-        },
-      };
-      const audioNombre = audioMap[tipo]?.[tema];
-      audioRuta = audioNombre ? `/audios/indicaciones/${audioNombre}` : null;
-    }
-
-    if (audioRuta) {
-      timeoutId = setTimeout(() => {
-        const audio = new Audio(audioRuta);
-        window.audio = audio;
-        audio.play().catch((e) => console.warn("Error al reproducir audio inicial:", e));
-      }, 2000);
-    }
-
     const obtenerContenidoDesdeAPI = async () => {
       try {
         let url = "";
@@ -67,22 +31,23 @@ function LetrasAudio() {
         }
 
         const respuesta = await fetch(url);
-        if (!respuesta.ok) throw new Error("Error en la respuesta del servidor");
+        if (!respuesta.ok)
+          throw new Error("Error en la respuesta del servidor");
 
         let datos = await respuesta.json();
-        if (tema === "numeros") datos = datos.filter((item) => item.valor <= 20);
-
+        if (tema === "numeros")
+          datos = datos.filter((item) => item.valor <= 20);
         setContenido(datos);
-        setResultadosTotales(new Array(datos.length).fill([]));
 
-        let progreso = 0;
-        const intervalo = setInterval(() => {
-          progreso += 10;
-          setPorcentajeCarga(Math.min(progreso, 100));
-          if (progreso >= 100) {
-            clearInterval(intervalo);
-            setTimeout(() => setCargando(false), 100);
-          }
+        const progresoCarga = setInterval(() => {
+          setPorcentajeCarga((prev) => {
+            if (prev >= 100) {
+              clearInterval(progresoCarga);
+              setTimeout(() => setCargando(false), 200);
+              return 100;
+            }
+            return prev + 10;
+          });
         }, 100);
       } catch (error) {
         console.error("Error al obtener datos:", error);
@@ -91,19 +56,10 @@ function LetrasAudio() {
     };
 
     obtenerContenidoDesdeAPI();
-
-    const mantenerActiva = setInterval(() => {
-      fetch("https://eduvoice-backend.onrender.com/")
-        .then(() => console.log("🔄 API mantenida activa"))
-        .catch((err) => console.warn("⚠️ Error al mantener API activa:", err));
-    }, 240000);
-
-    return () => {
-      clearTimeout(timeoutId);
-      clearInterval(mantenerActiva);
-      detenerAudio();
-    };
   }, [categoria, tema, tipo, navigate]);
+
+  const capitalizarPrimeraLetra = (str) =>
+    !str ? "" : str.charAt(0).toUpperCase() + str.slice(1);
 
   const detenerAudio = () => {
     if (window.audio && !window.audio.paused) {
@@ -118,7 +74,7 @@ function LetrasAudio() {
   };
 
   const iniciarReconocimiento = () => {
-    const itemActual = contenido[index] || { valor: `Extra ${index + 1}` };
+    const itemActual = contenido[index];
     const valorEsperado = String(itemActual.valor).toLowerCase().trim();
 
     const formasEsperadas = [
@@ -129,23 +85,26 @@ function LetrasAudio() {
       `la letra ${valorEsperado}`,
     ];
 
-    iniciarPronunciacion(formasEsperadas, tema, ({ resultado, pronunciado }) => {
-      setResultado(resultado);
+    iniciarPronunciacion(
+      formasEsperadas,
+      tema,
+      ({ resultado, pronunciado }) => {
+        setResultado(resultado);
+        const nuevoIntento = {
+          item: itemActual,
+          correcto: resultado === "correcta",
+          pronunciado: pronunciado || "No pronunció",
+          noPronunciado: !pronunciado,
+        };
 
-      const nuevoIntento = {
-        item: itemActual,
-        correcto: resultado === "correcta",
-        pronunciado: pronunciado || "No pronunció",
-        noPronunciado: !pronunciado,
-      };
-
-      setResultadosTotales((prev) => {
-        const copia = [...prev];
-        const intentosAnteriores = Array.isArray(copia[index]) ? copia[index] : [];
-        copia[index] = [...intentosAnteriores, nuevoIntento];
-        return copia;
-      });
-    });
+        setResultadosTotales((prev) => {
+          const copia = [...prev];
+          if (!copia[index]) copia[index] = [];
+          copia[index].push(nuevoIntento);
+          return copia;
+        });
+      }
+    );
   };
 
   const verificar = () => {
@@ -156,16 +115,17 @@ function LetrasAudio() {
     const esCorrecto = entrada === valorEsperado;
     setResultado(esCorrecto ? "correcta" : "incorrecta");
 
-    const nuevoResultado = {
+    const nuevoIntento = {
       item: itemActual,
       correcto: esCorrecto,
       pronunciado: entrada || "No ingresó texto",
+      noPronunciado: !entrada,
     };
 
     setResultadosTotales((prev) => {
       const copia = [...prev];
-      const intentosAnteriores = Array.isArray(copia[index]) ? copia[index] : [];
-      copia[index] = [...intentosAnteriores, nuevoResultado];
+      if (!copia[index]) copia[index] = [];
+      copia[index].push(nuevoIntento);
       return copia;
     });
   };
@@ -177,22 +137,9 @@ function LetrasAudio() {
       setResultado(null);
       setEntradaUsuario("");
     } else {
-      const resultadosCompletos = contenido.map((item, i) => {
-        const intentos = resultadosTotales[i];
-        if (intentos && intentos.length > 0) {
-          return intentos[intentos.length - 1]; // último intento
-        } else {
-          return {
-            item,
-            correcto: false,
-            pronunciado: "No pronunció",
-          };
-        }
-      });
-
       navigate("/resultados", {
         state: {
-          resultados: resultadosCompletos,
+          resultados: resultadosTotales,
           tipo,
           categoria,
           tema,
@@ -206,21 +153,23 @@ function LetrasAudio() {
     navigate(`/pagina2/${tipo}/${categoria}`);
   };
 
-  const capitalizarPrimeraLetra = (str) =>
-    !str ? "" : str.charAt(0).toUpperCase() + str.slice(1);
-
   const obtenerRutaArchivo = (tipoArchivo) => {
     const valor = contenido[index]?.valor;
     const texto = contenido[index]?.texto;
     if (!valor) return "";
     if (tipoArchivo === "imagen") {
-      if (tema === "letras") return `/imagenes/letras/${valor.toUpperCase()}.png`;
+      if (tema === "letras")
+        return `/imagenes/letras/${valor.toUpperCase()}.png`;
       if (tema === "numeros") return `/imagenes/numeros/${valor}.png`;
     }
     if (tipoArchivo === "audio") {
       if (tema === "letras") return `/audios/letras/${valor.toUpperCase()}.mp3`;
-      if (tema === "numeros") return `/audios/numeros/${valor}. ${capitalizarPrimeraLetra(texto)}.mp3`;
-      if (tema === "palabras") return `/audios/palabras/${categoria}/${valor}.mp3`;
+      if (tema === "numeros")
+        return `/audios/numeros/${valor}. ${capitalizarPrimeraLetra(
+          texto
+        )}.mp3`;
+      if (tema === "palabras")
+        return `/audios/palabras/${categoria}/${valor}.mp3`;
       if (tema === "frases") {
         const valorLimpio = valor.replace(/[¿?]/g, "");
         return `/audios/frases/${categoria}/${valorLimpio}.mp3`;
@@ -235,7 +184,9 @@ function LetrasAudio() {
     if (audioUrl) {
       const audio = new Audio(audioUrl);
       window.audio = audio;
-      audio.play().catch((e) => console.warn("Error al reproducir:", e.message));
+      audio
+        .play()
+        .catch((e) => console.warn("Error al reproducir:", e.message));
     }
   };
 
