@@ -16,7 +16,7 @@ function LetrasAudio() {
 
   // ✅ Reproducir audio de indicación al ingresar (una sola vez)
   useEffect(() => {
-    const ruta = `/audios/indicaciones/indicacion ${tema}1.mp3`;
+    const ruta = `/audios/indicaciones/indicacion-${tema}1.mp3`;
     const audio = new Audio(ruta);
     audio.play().catch((e) => console.warn("No se pudo reproducir la indicación:", e.message));
   }, [tema]);
