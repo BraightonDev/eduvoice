@@ -163,9 +163,6 @@ function LetrasAudio() {
             { valor: `Extra ${prev.length + 1}` },
           ]);
         }
-
-        // Avanzar al siguiente
-        setIndex((prev) => prev + 1);
       }
     );
   };
