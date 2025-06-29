@@ -31,12 +31,10 @@ function LetrasAudio() {
         }
 
         const respuesta = await fetch(url);
-        if (!respuesta.ok)
-          throw new Error("Error en la respuesta del servidor");
+        if (!respuesta.ok) throw new Error("Error en la respuesta del servidor");
 
         let datos = await respuesta.json();
-        if (tema === "numeros")
-          datos = datos.filter((item) => item.valor <= 20);
+        if (tema === "numeros") datos = datos.filter((item) => item.valor <= 20);
         setContenido(datos);
 
         const progresoCarga = setInterval(() => {
@@ -57,6 +55,12 @@ function LetrasAudio() {
 
     obtenerContenidoDesdeAPI();
   }, [categoria, tema, tipo, navigate]);
+
+  useEffect(() => {
+    if (!cargando && contenido.length > 0) {
+      reproducirAudio();
+    }
+  }, [cargando, contenido, index]);
 
   const capitalizarPrimeraLetra = (str) =>
     !str ? "" : str.charAt(0).toUpperCase() + str.slice(1);
@@ -163,11 +167,10 @@ function LetrasAudio() {
       if (tema === "numeros") return `/imagenes/numeros/${valor}.png`;
     }
     if (tipoArchivo === "audio") {
-      if (tema === "letras") return `/audios/letras/${valor.toUpperCase()}.mp3`;
+      if (tema === "letras")
+        return `/audios/letras/${valor.toUpperCase()}.mp3`;
       if (tema === "numeros")
-        return `/audios/numeros/${valor}. ${capitalizarPrimeraLetra(
-          texto
-        )}.mp3`;
+        return `/audios/numeros/${valor}. ${capitalizarPrimeraLetra(texto)}.mp3`;
       if (tema === "palabras")
         return `/audios/palabras/${categoria}/${valor}.mp3`;
       if (tema === "frases") {
