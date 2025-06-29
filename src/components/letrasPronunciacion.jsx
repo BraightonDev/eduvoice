@@ -14,6 +14,13 @@ function LetrasAudio() {
   const [porcentajeCarga, setPorcentajeCarga] = useState(0);
   const [entradaUsuario, setEntradaUsuario] = useState("");
 
+  // ✅ Reproducir audio de indicación al ingresar (una sola vez)
+  useEffect(() => {
+    const ruta = `/audios/indicaciones/indicacion-${tema}1.mp3`;
+    const audio = new Audio(ruta);
+    audio.play().catch((e) => console.warn("No se pudo reproducir la indicación:", e.message));
+  }, [tema]);
+
   useEffect(() => {
     const obtenerContenidoDesdeAPI = async () => {
       try {
@@ -55,12 +62,6 @@ function LetrasAudio() {
 
     obtenerContenidoDesdeAPI();
   }, [categoria, tema, tipo, navigate]);
-
-  useEffect(() => {
-    if (!cargando && contenido.length > 0) {
-      reproducirAudio();
-    }
-  }, [cargando, contenido, index]);
 
   const capitalizarPrimeraLetra = (str) =>
     !str ? "" : str.charAt(0).toUpperCase() + str.slice(1);
