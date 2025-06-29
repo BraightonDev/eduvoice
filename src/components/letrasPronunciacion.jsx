@@ -28,7 +28,6 @@ function LetrasAudio() {
     }
 
     let audioRuta = null;
-
     if (tipo === "escritura") {
       audioRuta = "/audios/indicaciones/indicacion escribir.mp3";
     } else {
@@ -48,9 +47,7 @@ function LetrasAudio() {
       timeoutId = setTimeout(() => {
         const audio = new Audio(audioRuta);
         window.audio = audio;
-        audio.play().catch((e) =>
-          console.warn("Error al reproducir audio inicial:", e)
-        );
+        audio.play().catch((e) => console.warn("Error al reproducir audio inicial:", e));
       }, 2000);
     }
 
@@ -73,11 +70,10 @@ function LetrasAudio() {
         if (!respuesta.ok) throw new Error("Error en la respuesta del servidor");
 
         let datos = await respuesta.json();
-        if (tema === "numeros") {
-          datos = datos.filter((item) => item.valor <= 20);
-        }
+        if (tema === "numeros") datos = datos.filter((item) => item.valor <= 20);
 
         setContenido(datos);
+        setResultadosTotales(new Array(datos.length).fill([]));
 
         let progreso = 0;
         const intervalo = setInterval(() => {
@@ -85,9 +81,7 @@ function LetrasAudio() {
           setPorcentajeCarga(Math.min(progreso, 100));
           if (progreso >= 100) {
             clearInterval(intervalo);
-            setTimeout(() => {
-              setCargando(false);
-            }, 100);
+            setTimeout(() => setCargando(false), 100);
           }
         }, 100);
       } catch (error) {
@@ -111,9 +105,6 @@ function LetrasAudio() {
     };
   }, [categoria, tema, tipo, navigate]);
 
-  const capitalizarPrimeraLetra = (str) =>
-    !str ? "" : str.charAt(0).toUpperCase() + str.slice(1);
-
   const detenerAudio = () => {
     if (window.audio && !window.audio.paused) {
       try {
@@ -124,14 +115,6 @@ function LetrasAudio() {
         console.warn("No se pudo detener el audio previo:", e);
       }
     }
-  };
-
-  const actualizarResultado = (nuevoResultado, index) => {
-    setResultadosTotales((prev) => {
-      const copia = [...prev];
-      copia[index] = nuevoResultado;
-      return copia;
-    });
   };
 
   const iniciarReconocimiento = () => {
@@ -149,21 +132,19 @@ function LetrasAudio() {
     iniciarPronunciacion(formasEsperadas, tema, ({ resultado, pronunciado }) => {
       setResultado(resultado);
 
-      const nuevoResultado = {
+      const nuevoIntento = {
         item: itemActual,
         correcto: resultado === "correcta",
         pronunciado: pronunciado || "No pronunció",
         noPronunciado: !pronunciado,
       };
 
-      actualizarResultado(nuevoResultado, index);
-
-      if (index >= contenido.length - 1) {
-        setContenido((prev) => [
-          ...prev,
-          { valor: `Extra ${prev.length + 1}` },
-        ]);
-      }
+      setResultadosTotales((prev) => {
+        const copia = [...prev];
+        const intentosAnteriores = Array.isArray(copia[index]) ? copia[index] : [];
+        copia[index] = [...intentosAnteriores, nuevoIntento];
+        return copia;
+      });
     });
   };
 
@@ -181,7 +162,12 @@ function LetrasAudio() {
       pronunciado: entrada || "No ingresó texto",
     };
 
-    actualizarResultado(nuevoResultado, index);
+    setResultadosTotales((prev) => {
+      const copia = [...prev];
+      const intentosAnteriores = Array.isArray(copia[index]) ? copia[index] : [];
+      copia[index] = [...intentosAnteriores, nuevoResultado];
+      return copia;
+    });
   };
 
   const siguiente = () => {
@@ -191,14 +177,19 @@ function LetrasAudio() {
       setResultado(null);
       setEntradaUsuario("");
     } else {
-      const resultadosCompletos = contenido.map(
-        (item, i) =>
-          resultadosTotales[i] || {
+      const resultadosCompletos = contenido.map((item, i) => {
+        const intentos = resultadosTotales[i];
+        if (intentos && intentos.length > 0) {
+          return intentos[intentos.length - 1]; // último intento
+        } else {
+          return {
             item,
             correcto: false,
             pronunciado: "No pronunció",
-          }
-      );
+          };
+        }
+      });
+
       navigate("/resultados", {
         state: {
           resultados: resultadosCompletos,
@@ -215,6 +206,9 @@ function LetrasAudio() {
     navigate(`/pagina2/${tipo}/${categoria}`);
   };
 
+  const capitalizarPrimeraLetra = (str) =>
+    !str ? "" : str.charAt(0).toUpperCase() + str.slice(1);
+
   const obtenerRutaArchivo = (tipoArchivo) => {
     const valor = contenido[index]?.valor;
     const texto = contenido[index]?.texto;
@@ -225,10 +219,8 @@ function LetrasAudio() {
     }
     if (tipoArchivo === "audio") {
       if (tema === "letras") return `/audios/letras/${valor.toUpperCase()}.mp3`;
-      if (tema === "numeros")
-        return `/audios/numeros/${valor}. ${capitalizarPrimeraLetra(texto)}.mp3`;
-      if (tema === "palabras")
-        return `/audios/palabras/${categoria}/${valor}.mp3`;
+      if (tema === "numeros") return `/audios/numeros/${valor}. ${capitalizarPrimeraLetra(texto)}.mp3`;
+      if (tema === "palabras") return `/audios/palabras/${categoria}/${valor}.mp3`;
       if (tema === "frases") {
         const valorLimpio = valor.replace(/[¿?]/g, "");
         return `/audios/frases/${categoria}/${valorLimpio}.mp3`;
@@ -243,9 +235,7 @@ function LetrasAudio() {
     if (audioUrl) {
       const audio = new Audio(audioUrl);
       window.audio = audio;
-      audio.play().catch((e) =>
-        console.warn("Error al reproducir:", e.message)
-      );
+      audio.play().catch((e) => console.warn("Error al reproducir:", e.message));
     }
   };
 
