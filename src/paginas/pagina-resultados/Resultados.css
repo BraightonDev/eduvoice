@@ -11,10 +11,11 @@
 .tabla-cabecera,
 .fila-resultado {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 0.8fr 1fr 1fr 1fr;
   padding: 1rem;
   border-bottom: 1px solid #ccc;
   text-align: center;
+  gap: 0.5rem;
 }
 
 .tabla-cabecera {
@@ -44,6 +45,17 @@
 .no-pronunciado {
   color: gray;
   font-weight: bold;
+}
+
+.fila-resultado span:nth-child(1) {
+  font-weight: bold;
+  color: #555;
+}
+
+.fila-resultado span:nth-child(3) {
+  font-style: italic;
+  color: #444;
+  overflow-wrap: break-word;
 }
 
 @media (max-width: 600px) {
