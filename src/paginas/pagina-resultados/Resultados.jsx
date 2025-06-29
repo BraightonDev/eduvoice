@@ -1,16 +1,13 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./Resultados.css";
-
 const Resultados = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { resultados = [], tipo, categoria, tema } = location.state || {};
-
   const volverInicio = () => {
     navigate(`/pagina2/${tipo}/${categoria}`);
   };
-
   return (
     <div className="contenedor-pagina1">
       <button className="boton-volver-pagina1" onClick={volverInicio}>
@@ -23,7 +20,7 @@ const Resultados = () => {
         <div className="tabla-cabecera">
           <span>Palabra</span>
           <span>Resultado</span>
-          <span>Pronunció</span>
+          <span>{tipo === "escritura" ? "Escritura" : "Pronunció"}</span>
         </div>
 
         {resultados.map((res, i) => (
@@ -51,5 +48,4 @@ const Resultados = () => {
     </div>
   );
 };
-
 export default Resultados;
