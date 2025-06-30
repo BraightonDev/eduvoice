@@ -14,10 +14,12 @@ function LetrasAudio() {
   const [porcentajeCarga, setPorcentajeCarga] = useState(0);
   const [entradaUsuario, setEntradaUsuario] = useState("");
 
-  // ✅ Reproducir audio de indicación al ingresar (una sola vez)
+  // ✅ Solo se reproduce la indicación al entrar
   useEffect(() => {
+    detenerAudio();
     const ruta = `/audios/indicaciones/indicacion-${tema}1.mp3`;
     const audio = new Audio(ruta);
+    window.audio = audio;
     audio.play().catch((e) => console.warn("No se pudo reproducir la indicación:", e.message));
   }, [tema]);
 
@@ -79,41 +81,40 @@ function LetrasAudio() {
   };
 
   const iniciarReconocimiento = () => {
-  detenerAudio(); // 🔊 Detiene el audio antes de iniciar el reconocimiento
+    detenerAudio(); // ✅ Detiene audio antes de iniciar pronunciación
 
-  const itemActual = contenido[index];
-  const valorEsperado = String(itemActual.valor).toLowerCase().trim();
+    const itemActual = contenido[index];
+    const valorEsperado = String(itemActual.valor).toLowerCase().trim();
 
-  const formasEsperadas = [
-    valorEsperado,
-    `letra ${valorEsperado}`,
-    `número ${valorEsperado}`,
-    `el número ${valorEsperado}`,
-    `la letra ${valorEsperado}`,
-  ];
+    const formasEsperadas = [
+      valorEsperado,
+      `letra ${valorEsperado}`,
+      `número ${valorEsperado}`,
+      `el número ${valorEsperado}`,
+      `la letra ${valorEsperado}`,
+    ];
 
-  iniciarPronunciacion(
-    formasEsperadas,
-    tema,
-    ({ resultado, pronunciado }) => {
-      setResultado(resultado);
-      const nuevoIntento = {
-        item: itemActual,
-        correcto: resultado === "correcta",
-        pronunciado: pronunciado || "No pronunció",
-        noPronunciado: !pronunciado,
-      };
+    iniciarPronunciacion(
+      formasEsperadas,
+      tema,
+      ({ resultado, pronunciado }) => {
+        setResultado(resultado);
+        const nuevoIntento = {
+          item: itemActual,
+          correcto: resultado === "correcta",
+          pronunciado: pronunciado || "No pronunció",
+          noPronunciado: !pronunciado,
+        };
 
-      setResultadosTotales((prev) => {
-        const copia = [...prev];
-        if (!copia[index]) copia[index] = [];
-        copia[index].push(nuevoIntento);
-        return copia;
-      });
-    }
-  );
-};
-
+        setResultadosTotales((prev) => {
+          const copia = [...prev];
+          if (!copia[index]) copia[index] = [];
+          copia[index].push(nuevoIntento);
+          return copia;
+        });
+      }
+    );
+  };
 
   const verificar = () => {
     const itemActual = contenido[index];
@@ -139,7 +140,7 @@ function LetrasAudio() {
   };
 
   const siguiente = () => {
-    detenerAudio();
+    detenerAudio(); // ✅ Detiene audio antes de pasar al siguiente
     if (index < contenido.length - 1) {
       setIndex(index + 1);
       setResultado(null);
@@ -186,7 +187,7 @@ function LetrasAudio() {
   };
 
   const reproducirAudio = () => {
-    detenerAudio();
+    detenerAudio(); // ✅ Detiene cualquier audio previo
     const audioUrl = obtenerRutaArchivo("audio");
     if (audioUrl) {
       const audio = new Audio(audioUrl);
