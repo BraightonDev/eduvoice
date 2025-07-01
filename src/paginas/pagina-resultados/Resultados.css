@@ -1,3 +1,6 @@
+.contenedor-pagina1{
+  background: linear-gradient(to right, #2c3e50, #3498db);
+}
 .tabla-resultados {
   width: 100%;
   max-width: 800px;

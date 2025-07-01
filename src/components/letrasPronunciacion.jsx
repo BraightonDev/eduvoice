@@ -14,7 +14,6 @@ function LetrasAudio() {
   const [porcentajeCarga, setPorcentajeCarga] = useState(0);
   const [entradaUsuario, setEntradaUsuario] = useState("");
 
-  // ✅ Solo se reproduce la indicación al entrar
   useEffect(() => {
     detenerAudio();
     const ruta = `/audios/indicaciones/indicacion-${tema}1.mp3`;
@@ -87,7 +86,7 @@ function LetrasAudio() {
   };
 
   const iniciarReconocimiento = () => {
-    detenerAudio(); // ✅ Detiene audio antes de iniciar pronunciación
+    detenerAudio();
 
     const itemActual = contenido[index];
     const valorEsperado = String(itemActual.valor).toLowerCase().trim();
@@ -146,7 +145,7 @@ function LetrasAudio() {
   };
 
   const siguiente = () => {
-    detenerAudio(); // ✅ Detiene audio antes de pasar al siguiente
+    detenerAudio();
     if (index < contenido.length - 1) {
       setIndex(index + 1);
       setResultado(null);
@@ -181,9 +180,7 @@ function LetrasAudio() {
     if (tipoArchivo === "audio") {
       if (tema === "letras") return `/audios/letras/${valor.toUpperCase()}.mp3`;
       if (tema === "numeros")
-        return `/audios/numeros/${valor}. ${capitalizarPrimeraLetra(
-          texto
-        )}.mp3`;
+        return `/audios/numeros/${valor}. ${capitalizarPrimeraLetra(texto)}.mp3`;
       if (tema === "palabras")
         return `/audios/palabras/${categoria}/${valor}.mp3`;
       if (tema === "frases") {
@@ -195,7 +192,7 @@ function LetrasAudio() {
   };
 
   const reproducirAudio = () => {
-    detenerAudio(); // ✅ Detiene cualquier audio previo
+    detenerAudio();
     const audioUrl = obtenerRutaArchivo("audio");
     if (audioUrl) {
       const audio = new Audio(audioUrl);
@@ -251,7 +248,7 @@ function LetrasAudio() {
       </h1>
       <h2 className="letras-titulo">Categoría: {categoria}</h2>
 
-      {tipo !== "escritura" && (
+      {tipo !== "escritura" && tema !== "frases" && (
         <div className="letras-cuadro">
           <img
             src={obtenerRutaArchivo("imagen")}
@@ -266,6 +263,13 @@ function LetrasAudio() {
         </div>
       )}
 
+      {/* Espaciador solo para frases habladas */}
+      {tipo !== "escritura" && tema === "frases" && (
+        <div style={{ height: "150px" }}></div>
+      )}
+
+      <h2 className="letras-subtitulo">{obtenerInstruccion()}</h2>
+
       {tipo === "escritura" && (
         <input
           className="input-escritura"
@@ -276,8 +280,6 @@ function LetrasAudio() {
           style={{ marginTop: "1.5rem" }}
         />
       )}
-
-      <h2 className="letras-subtitulo">{obtenerInstruccion()}</h2>
 
       <div className="letras-botones-container">
         <button

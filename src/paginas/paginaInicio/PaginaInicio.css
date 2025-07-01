@@ -3,7 +3,7 @@
 /* ========================= */
 .pantalla-bienvenida {
   position: relative;
-  background-color: #269ec2;
+  background: linear-gradient(to right, #2c3e50, #3498db);
   min-height: 93vh;
   width: 100%;
   padding: 2rem;
